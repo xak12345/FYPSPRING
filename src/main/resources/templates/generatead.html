@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Generate Advertisement</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+
+<style>
+body {
+	padding-top: 80px;
+}
+</style>
+
+</head>
+<body>
+	<div th:replace="/fragments/header"></div>
+	<div class="container my-4">
+		<h1>Generate Advertisement</h1>
+		<form id="productForm" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="sellerName">Seller's Name</label> <input type="text"
+					class="form-control" id="sellerName" name="sellerName" required>
+			</div>
+			<div class="form-group">
+				<label for="productName">Product Name</label> <input type="text"
+					class="form-control" id="productName" name="productName" required>
+			</div>
+			<div class="form-group">
+				<label for="productDescription">Product Description</label>
+				<textarea class="form-control" id="productDescription"
+					name="productDescription" required></textarea>
+			</div>
+			<div class="form-group">
+				<label for="productPrice">Product Price</label> <input type="number"
+					class="form-control" id="productPrice" name="productPrice" required>
+			</div>
+			<div class="form-group">
+				<label for="productImage">Product Image</label> <input type="file"
+					class="form-control" id="productImage" name="productImage"
+					accept="image/*" required>
+			</div>
+			<button type="button" onclick="submitProduct()"
+				class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+
+	<script>
+		function submitProduct() {
+			var sellerName = document.getElementById("sellerName").value;
+			var productName = document.getElementById("productName").value;
+			var productDescription = document
+					.getElementById("productDescription").value;
+			var productPrice = document.getElementById("productPrice").value;
+
+			var productImage = document.getElementById("productImage").files[0];
+			if (productImage) {
+				var reader = new FileReader();
+				reader.onload = function(event) {
+					var adDetails = {
+						sellerName : sellerName,
+						productName : productName,
+						productDescription : productDescription,
+						productPrice : productPrice,
+						productImage : event.target.result
+					};
+					localStorage
+							.setItem('adDetails', JSON.stringify(adDetails));
+					window.location.href = "/products";
+				};
+				reader.readAsDataURL(productImage);
+			}
+		}
+	</script>
+	<div th:replace="/fragments/footer"></div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmls:th="http://www.thymeleaf.org">
+<head>
+<title>XK Electronics</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/css/bootstrap.js"></script>
+<style>
+body {
+	padding-top: 80px;
+}
+</style>
+</head>
+<body>
+	<div th:replace="/fragments/header"></div>
+	<div class="container my-4">
+		<div class="h1">View Categories:</div>
+		<div class="shadow-4 rounded-5 overflow-hidden">
+		<input id='myInput' onkeyup='searchTable()' type='text' placeholder="Type to search">
+			<table class="table table-hover align-middle mb-0 bg-white" id='myTable'>
+				<thead class="bg-light">
+					<tr>
+						<th>ID</th>
+						<th>Category</th>
+						<th>Edit</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:each="category: ${listCategories}">
+						<tr>
+							<td th:text="${category.id}"></td>
+							<td th:text="${category.name}"></td>
+							<td><a th:href="@{/categories/edit/{id}(id=${category.id})}"><button
+										type="button" class="btn btn-primary">Edit</button></a></td>
+							<td><a
+								th:href="@{/categories/delete/{id}(id=${category.id})}"><button
+										type="button" class="btn btn-warning">Delete</button></a></td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
+		</div>
+		<a href="http://localhost:8080/categories/add" target="blank"
+			class="btn btn-danger">Add Category</a>
+		<div th:replace="/fragments/footer"></div>
+</body>
+
+<script>
+function searchTable() {
+    var input, filter, found, table, tr, td, i, j;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    tr = table.querySelectorAll("tbody tr:not(.header)");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                found = true;
+            }
+        }
+        if (found) {
+            tr[i].style.display = "";
+            found = false;
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+</script>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>XK ELECTRONICS - Shopping Cart</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/js/bootstrap.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AS8QhhNa4NQBqi7knl--97JEe-QqDPs5kkNdT6kJt4ERGuhvNx1h577fg_1Gw3qz6H39tD67XAR2oUOI&currency=SGD&components=buttons"></script>
+<style>
+body {
+	padding-top: 80px;
+}
+
+.btn-success {
+	position: absolute;
+	left: 10%;
+}
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <div th:replace="fragments/header"></div>
+    
+      <div class="container ">
+        <div class="row fs-1 text-center">
+          <p>THANK YOU FOR YOUR PURCHASE!</p>
+        </div>
+        <div class="row mb-5">
+        <!-- shopping cart -->
+          <div class="col-8">
+            <div class="container ">
+            <!-- shopping cart products header -->
+              <div class="row m-3 border-top border-bottom fs-5">
+                <div class="col">PRODUCTS</div>
+                <div class="col">PRICE</div>
+                <div class="col">QUANTITY</div>
+                <div class="col">SUBTOTAL</div>
+              </div>
+            <!-- shopping cart rows -->
+              <div class="row m-3 border-bottom"
+                th:each="cartProduct : ${cartProductList}">
+                <!-- Item name, description, image -->
+                <div class="col mb-3">
+                  <h5 th:text="${cartProduct.product.name}"></h5>
+                  <p th:text="${cartProduct.product.description}"></p>
+                  <img width="100px" th:src="@{/uploads/products/{id}/{imageName}(id=${cartProduct.product.id}, imageName=${cartProduct.product.imgName})}">
+                </div>
+                             
+                <div class="col mb-3">
+                  <div class="col align-self-center" th:text="'$'+${cartProduct.product.price}"></div>
+                </div>
+                
+                <div class="col mb-3">
+                  <div class="col align-self-center" th:text="${cartProduct.quantity}"></div>
+                </div>
+                
+                <div class="col mb-3">
+                  <p th:text = " '$'+(${cartProduct.product.price}*${cartProduct.quantity})">
+                </div>
+         
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          <!-- Order summary -->
+          <div class="col-8">
+            <div class="container ">
+          
+              <!-- COMPLETE CODE HERE -->
+              <div class="row  m-3 border-top border-bottom fw-bold">
+                <div class="col text-center fs-3">TOTAL AMOUNT PAID</div>
+              </div>
+              <!-- Order summary rows -->
+              
+              <div class="row  m-3 border-bottom fw-bold">
+                <div class="col fs-6">
+                  <p>TOTAL</p>
+                </div>
+                <div class="col fs-6 text-end">
+                  <p id="cartTotal" th:text="'$'+${cartTotal}"></p>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          
+          <br>
+          <a class="btn btn-success" th:href="@{/products}">Continue Shopping</a>
+          
+        </div>
+      </div>
+    
+    <div th:replace="fragments/footer"></div>
+  
+</body>
+</html>

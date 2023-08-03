@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>XK ELECTRONICS - Purchase History</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AS8QhhNa4NQBqi7knl--97JEe-QqDPs5kkNdT6kJt4ERGuhvNx1h577fg_1Gw3qz6H39tD67XAR2oUOI&currency=SGD&components=buttons"></script>
+    <style>
+        body {
+            padding-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Purchase History</h1>
+    <div class="row mb-5">
+        <!-- shopping cart -->
+        <div class="col-11">
+            <div class="container ">
+                <div th:replace="fragments/header"></div>
+                <!-- shopping cart products header -->
+                <div class="row m-3 border-top border-bottom fs-5">
+                    <div class="col">Image</div>
+                    <div class="col">Seller</div>
+                    <div class="col">ID</div>
+                    <div class="col">OrderID</div>
+                    <div class="col">TransactionID</div>
+                    <div class="col">Name</div>
+                    <div class="col">Price</div>
+                    <div class="col">Quantity</div>
+                </div>
+                <!-- shopping cart rows -->
+                <div class="row m-3 border-bottom" th:each="orderProduct : ${orderList}">
+                    <div class="col mb-3">
+                        <img width="100px"
+                             th:src="@{/uploads/products/{id}/{imgName}(id=${orderProduct.product.id}, imgName=${orderProduct.product.imgName})}" />
+                    </div>
+                    <div class="col mb-3" th:text="${orderProduct.product.seller}"></div>
+                    <div class="col mb-3" th:text="${orderProduct.Id}"></div>
+                    <div class="col mb-3" th:text="${orderProduct.orderId}"></div>
+                    <div class="col mb-3" th:text="${orderProduct.transactionId}"></div>
+                    <div class="col mb-3" th:text="${orderProduct.product.name}"></div>
+                    <div class="col mb-3" th:text="${orderProduct.product.price}"></div>
+                    <div class="col mb-3" th:text="${orderProduct.quantity}"></div>
+                </div>
+
+                <!-- Overall Total Price -->
+                <!--  <div class="row m-3">
+                    <div class="col-6">
+                        <div th:each="entry : ${totalPriceBySeller}">
+                            <div th:text="${entry.key}"></div>
+                        </div>
+                        <div>Total Price:</div>
+                    </div>
+                    <div class="col-6">
+                        <div th:each="entry : ${totalPriceBySeller}">
+                        
+                            <div th:text="${entry.value}"></div>
+                        </div>
+                        <div><span th:text="${totalPrice}"></span></div>
+                    </div>
+                </div>-->
+
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer"></div>
+</body>
+</html>

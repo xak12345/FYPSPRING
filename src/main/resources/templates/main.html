@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>XK Electronics</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <style>
+        .banner-image {
+            background-image: url('images/city.jpg');
+            background-size: cover;
+        }
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .alert-box {
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div th:replace="/fragments/header"></div>
+
+    <!-- Alert for banned users -->
+    <div th:if="${#request.isUserInRole('BANNED')}" class="alert-overlay">
+        <div class="alert-box">
+            <div class="alert alert-danger" role="alert">
+                You are banned! Please contact the administrator for further assistance.
+            </div>
+            <button type="button" class="btn btn-primary" onclick="closeAlert()">Close</button>
+        </div>
+    </div>
+
+    <!--  Banner Image -->
+    <div class="banner-image w-100 vh-100 d-flex justify-content-center align-items-center">
+        <div class="content text-center">
+            <h1 class="text-white">XK ELECTRONICS</h1>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <!-- <div class="container my-5.d-grid gap-5">
+        <div class="p-5 border">
+            <p>text here</p>
+        </div>
+
+        <div class="p-5 border">
+            <p>more and so on here</p>
+        </div>
+
+        <div class="p-5 border">
+            <p>more and so on here</p>
+        </div>
+    </div> -->
+
+    <!-- <script>
+        var nav = document.querySelector('nav');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 100) {
+                nav.classList.add('bg-light', 'shadow');
+            } else {
+                nav.classList.remove('bg-light', 'shadow');
+            }
+        });
+    </script> -->
+
+    <div th:replace="/fragments/footer"></div>
+
+    <script>
+        function closeAlert() {
+            var alertOverlay = document.querySelector('.alert-overlay');
+            alertOverlay.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

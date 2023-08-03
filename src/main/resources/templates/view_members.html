@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>XK Electronics - View Members</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/css/bootstrap.js"></script>
+<style>
+body {
+	padding-top: 80px;
+}
+</style>
+</head>
+<body>
+	<div class="container my-4">
+		<div th:replace="fragments/header"></div>
+		<main>
+			<div class="h1">View Members</div>
+			<div class="shadow-4 rounded-5 overflow-hidden">
+				<input id='myInput' onkeyup='searchTable()' type='text'
+					placeholder="Type to search"> <select id="roleFilter"
+					onchange="filterTable()">
+					<option value="">All Members</option>
+					<option value="BUYER">Buyers</option>
+					<option value="SELLER">Seller</option>
+					<option value="ADMIN">Admin</option>
+					<option value="BANNED">Banned</option>
+				</select>
+				<table class="table table-hover align-middle mb-0 bg-white"
+					id='myTable'>
+					<thead class="bg-light">
+						<tr>
+							<th onclick="sortTable('id')">ID</th>
+							<th>Name</th>
+							<th>Username</th>
+							<th>Email</th>
+							<th>Role</th>
+							<th onclick="sortTable('totalPrice')">Total Spending</th>
+							<th onclick="sortTable('totalEarned')">Total Earned</th>
+							<th>Advertise</th>
+							<th>Edit</th>
+							<th>Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="member : ${listMembers}">
+							<td th:text="${member.id}"></td>
+							<td th:text="${member.name}"></td>
+							<td th:text="${member.username}"></td>
+							<td th:text="${member.email}"></td>
+							<td th:text="${member.role.replace('ROLE_', '')}"></td>
+							<td>
+								<!-- Calculate and display total price for each member --> <span
+								th:if="${member.role == 'ROLE_ADMIN'}">-</span> <span
+								th:unless="${member.role == 'ROLE_ADMIN'}"
+								th:text="${member.totalPrice}"></span>
+							</td>
+							<td><span th:if="${member.role == 'ROLE_SELLER'}"> <span
+									th:text="${totalPriceBySeller.get(member.name) != null ? totalPriceBySeller.get(member.name) : '0.0'}"></span>
+							</span> <span th:unless="${member.role == 'ROLE_SELLER'}">-</span></td>
+
+							<td><a th:if="${member.role == 'ROLE_SELLER'}"
+								class="btn btn-success" onclick="sendEmail(this)">Advertise</a>
+								<span th:unless="${member.role == 'ROLE_SELLER'}">-</span></td>
+
+							<td><a th:href="@{/members/edit/{id}(id=${member.id})}"><button
+										type="button" class="btn btn-primary">Edit</button></a></td>
+							<td><a class="btn btn-danger" onclick="myConfirm(event)"
+								th:href="@{/members/delete/{id}(id=${member.id})}">Remove</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<a href="http://localhost:8080/members/add" target="blank"
+				class="btn btn-danger">Add Member</a>
+		</main>
+		<div th:replace="fragments/footer"></div>
+	</div>
+
+	<script>
+		function sendEmail(button) {
+			var row = button.parentNode.parentNode; // Get the parent row of the button clicked
+			var email = row.querySelector("td:nth-child(4)").innerText.trim(); // Fetch email from the 4th column (Email column)
+			var subject = "Special Offer for XK Electronics Sellers";
+			var body = "Dear Seller,\n\nWe are excited to offer you an opportunity to advertise your products for being a loyal member of XK Electronics.\n\nReply to this email with the name of the product, price of the product, and an image of the product to advertise if you want to sign up for this advertisement opportunity!\n\nHappy selling!\n\nXK Electronics Team";
+
+			window.location.href = "mailto:" + email + "?subject="
+					+ encodeURIComponent(subject) + "&body="
+					+ encodeURIComponent(body);
+		}
+
+		function myConfirm(event) {
+			var result = confirm("Are you sure you want to remove this member?");
+			if (!result) {
+				event.preventDefault(); // Prevent the default behavior (i.e., following the link)
+			}
+		}
+
+		function searchTable() {
+			var input, filter, found, table, tr, td, i, j;
+			input = document.getElementById("myInput");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.querySelectorAll("tbody tr:not(.header)");
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td");
+				for (j = 0; j < td.length; j++) {
+					if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+						found = true;
+					}
+				}
+				if (found) {
+					tr[i].style.display = "";
+					found = false;
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+
+		function filterTable() {
+			var select, filter, table, tr, td, i;
+			select = document.getElementById("roleFilter");
+			filter = select.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.querySelectorAll("tbody tr:not(.header)");
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[4]; // Column index of Role
+				if (td) {
+					var role = td.innerHTML.toUpperCase();
+					if (filter === "" || role === filter
+							|| role === "ROLE_" + filter) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+
+		function sortTable(column) {
+			var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+			table = document.getElementById("myTable");
+			switching = true;
+			dir = "desc";
+
+			if (column === "totalPrice") {
+				// Sorting by Total Spending
+				var index = 5; // Column index of Total Spending
+				while (switching) {
+					switching = false;
+					rows = table.rows;
+					for (i = 1; i < rows.length - 1; i++) {
+						shouldSwitch = false;
+						x = rows[i].getElementsByTagName("td")[index].innerText
+								.trim();
+						y = rows[i + 1].getElementsByTagName("td")[index].innerText
+								.trim();
+						if (x === "-") {
+							x = Number.NEGATIVE_INFINITY;
+						} else {
+							x = parseFloat(x.replace("$", "").replace(",", ""));
+						}
+
+						if (y === "-") {
+							y = Number.NEGATIVE_INFINITY;
+						} else {
+							y = parseFloat(y.replace("$", "").replace(",", ""));
+						}
+
+						if (dir === "desc") {
+							if (x < y) {
+								shouldSwitch = true;
+								break;
+							}
+						} else if (dir === "asc") {
+							if (x > y) {
+								shouldSwitch = true;
+								break;
+							}
+						}
+					}
+					if (shouldSwitch) {
+						rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+						switching = true;
+						switchcount++;
+					} else {
+						if (switchcount === 0 && dir === "desc") {
+							dir = "asc";
+							switching = true;
+						}
+					}
+				}
+			} else if (column === "totalEarned") {
+				// Sorting by Total Earned
+				var index = 6; // Column index of Total Earned
+				while (switching) {
+					switching = false;
+					rows = table.rows;
+					for (i = 1; i < rows.length - 1; i++) {
+						shouldSwitch = false;
+						x = rows[i].getElementsByTagName("td")[index].innerText
+								.trim();
+						y = rows[i + 1].getElementsByTagName("td")[index].innerText
+								.trim();
+						if (x === "-") {
+							x = Number.NEGATIVE_INFINITY;
+						} else {
+							x = parseFloat(x.replace("$", "").replace(",", ""));
+						}
+
+						if (y === "-") {
+							y = Number.NEGATIVE_INFINITY;
+						} else {
+							y = parseFloat(y.replace("$", "").replace(",", ""));
+						}
+
+						if (dir === "desc") {
+							if (x < y) {
+								shouldSwitch = true;
+								break;
+							}
+						} else if (dir === "asc") {
+							if (x > y) {
+								shouldSwitch = true;
+								break;
+							}
+						}
+					}
+					if (shouldSwitch) {
+						rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+						switching = true;
+						switchcount++;
+					} else {
+						if (switchcount === 0 && dir === "desc") {
+							dir = "asc";
+							switching = true;
+						}
+					}
+				}
+			} else if (column === "id") {
+				// Sorting by ID
+				var index = 0; // Column index of ID
+				while (switching) {
+					switching = false;
+					rows = table.rows;
+					for (i = 1; i < rows.length - 1; i++) {
+						shouldSwitch = false;
+						x = parseInt(rows[i].getElementsByTagName("td")[index].innerText);
+						y = parseInt(rows[i + 1].getElementsByTagName("td")[index].innerText);
+						if (dir === "desc") {
+							if (x < y) {
+								shouldSwitch = true;
+								break;
+							}
+						} else if (dir === "asc") {
+							if (x > y) {
+								shouldSwitch = true;
+								break;
+							}
+						}
+					}
+					if (shouldSwitch) {
+						rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+						switching = true;
+						switchcount++;
+					} else {
+						if (switchcount === 0 && dir === "desc") {
+							dir = "asc";
+							switching = true;
+						}
+					}
+				}
+			}
+		}
+	</script>
+</body>
+</html>
+
+

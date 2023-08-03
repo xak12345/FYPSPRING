@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>XK Electronics - Shopping Cart</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AS8QhhNa4NQBqi7knl--97JEe-QqDPs5kkNdT6kJt4ERGuhvNx1h577fg_1Gw3qz6H39tD67XAR2oUOI&currency=SGD&components=buttons"></script>
+    <style>
+        body {
+            padding-top: 80px;
+        }
+        
+        /* Reduce the width of the quantity box */
+        input[name="qty"] {
+        max-width: 60px;
+        width: 100%;
+    }
+
+        /* Vertically align the icon */
+        .remove-icon {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        
+        /* Display error message */
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div th:replace="fragments/header"></div>
+        <main>
+            <div class="container">
+                <div class="row fs-1 text-center">
+                    <p>SHOPPING CART</p>
+                </div>
+                <div class="row mb-5">
+                    <!-- shopping cart -->
+                    <div class="col-8">
+                        <div class="container">
+                            <!-- shopping cart products header -->
+                            <div class="row m-3 border-top border-bottom fs-5">
+                                <div class="col">SELLER</div>
+                                <div class="col">PRODUCTS</div>
+                                <div class="col">PRICE</div>
+                                <div class="col">QUANTITY</div>
+                                <div class="col">SUBTOTAL</div>
+                            </div>
+                            <!-- shopping cart rows -->
+                            <div class="row m-3 border-bottom" th:each="cartProduct : ${cartProductList}">
+                                <!-- Product name, description, image -->
+                                
+                                <div class="col mb-3">
+                                    <div class="col align-self-center" th:text="${cartProduct.product.seller}"></div>
+                                </div>
+                                
+                                <div class="col mb-3">
+                                    <h5 th:text="${cartProduct.product.name}"></h5>
+                                    <p th:text="${cartProduct.product.description}"></p>
+                                    <img width="100px" th:src="@{/uploads/products/{id}/{imageName}(id=${cartProduct.product.id}, imageName=${cartProduct.product.imgName})}">
+                                </div>
+                                <!-- Product quantity, price, links -->
+                                <div class="col mb-3">
+                                    <div class="col align-self-center" th:text="'$'+${cartProduct.product.price}"></div>
+                                </div>
+                                <div class="col mb-3">
+                                    <div class="col align-self-center">
+                                        <!-- Update product quantity form -->
+                                        <form class="needs-validation" th:action="@{/cart/update/{id}(id=${cartProduct.id})}" method="post" novalidate>
+                                            <div class="input-group">
+                                                <input type="number" name="qty" th:value="${cartProduct.quantity}" th:id="${cartProduct.id}" required value="1" min="1" class="form-control" />
+                                                <div class="invalid-feedback">Enter a valid quantity</div>
+                                                <div class="input-group-append">
+                                                    <!-- Remove product link -->
+                                                    <a class="btn btn-danger remove-icon" th:href="@{/cart/remove/{id}(id=${cartProduct.id})}">
+                                                        <i class="fa fa-close" style="font-size:20px"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col mb-3">
+                                    <div class="col align-self-center" th:text="'$'+${cartProduct.subTotal}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Order summary -->
+                    <div class="col-4">
+                        <div class="container">
+                            <div class="row m-3 border-top border-bottom fw-bold">
+                                <div class="col text-center fs-3">ORDER SUMMARY</div>
+                            </div>
+                            <!-- Order summary rows -->
+                            <div class="row m-3 border-bottom" th:each="cartProduct : ${cartProductList}">
+                                <div class="col fs-6">
+                                    <p th:text="${cartProduct.product.name}+' x '+${cartProduct.quantity}"></p>
+                                </div>
+                                <div class="col fs-6 text-end">
+                                    <p th:text="'$'+${cartProduct.subTotal}"></p>
+                                </div>
+                            </div>
+                            <!-- COMPLETE CODE HERE -->
+                            <div class="row m-3 border-bottom fw-bold">
+                                <div class="col fs-6">
+                                    <p>TOTAL</p>
+                                </div>
+                                <div class="col fs-6 text-end">
+                                    <p id="cartTotal" th:text="'$'+${cartTotal}"></p>
+                                </div>
+                            </div>
+                            <div th:if="${#request.isUserInRole('ROLE_ADMIN')}">
+                                <!-- Display alert for ROLE_ADMIN users -->
+                                <div class="alert alert-info mt-3" role="alert">
+                                    Switch to a BUYER/SELLER account before purchasing products!
+                                </div>
+                            </div>
+                            <div th:unless="${#request.isUserInRole('ROLE_ADMIN')}">
+                                <div th:replace="fragments/paypal"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+            'use strict';
+
+            var form = document.querySelector('.needs-validation');
+            var quantityInputs = document.querySelectorAll('input[name="qty"]');
+
+            quantityInputs.forEach(function(input) {
+                input.addEventListener('input', function(event) {
+                    validateInput(input);
+                    updateSubtotal(input);
+                    updateTotal();
+                });
+
+                input.addEventListener('keydown', function(event) {
+                    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                        event.preventDefault();
+                        var currentValue = parseInt(input.value);
+                        var newValue = currentValue + (event.key === 'ArrowUp' ? 1 : -1);
+                        input.value = newValue >= 0 ? newValue : 0;
+                        validateInput(input);
+                        updateSubtotal(input);
+                        updateTotal();
+                    }
+                });
+            });
+
+            form.addEventListener('submit', function(event) {
+                var inputs = form.querySelectorAll('input[name="qty"]');
+                inputs.forEach(function(input) {
+                    validateInput(input);
+                });
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                updateTotal();
+
+                form.classList.add('was-validated');
+            });
+
+            function validateInput(input) {
+                var errorMessage = input.parentElement.querySelector('.invalid-feedback');
+                var value = parseInt(input.value);
+
+                if (isNaN(value) || value <= 0) {
+                    input.setCustomValidity('Please enter a valid number');
+                    errorMessage.style.display = 'block';
+                } else {
+                    input.setCustomValidity('');
+                    errorMessage.style.display = 'none';
+                }
+            }
+
+         
+            </script>
+        </main>
+        <div th:replace="fragments/footer"></div>
+    </div>
+</body>
+</html>
