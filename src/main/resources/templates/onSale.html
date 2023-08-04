@@ -1,0 +1,117 @@
+<!-- 21041531 Badi's code and function -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Booklink - View Item</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/js/bootstrap.js"></script>
+
+<style>
+body {
+	padding-top: 20px;
+}
+
+.sale-banner {
+	background-color: #FF0000;
+	color: #ffffff;
+	padding: 10px;
+	text-align: center;
+}
+
+.sale-text {
+	font-weight: bold;
+	font-size: 18px;
+}
+
+.item-details {
+	margin-top: 20px;
+	border: 1px solid #eaeaea;
+	border-radius: 5px;
+	padding: 20px;
+}
+
+.item-image {
+	max-width: 100%;
+	max-height: 400px;
+	object-fit: cover;
+	border-radius: 5px;
+}
+
+.item-name {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.item-category {
+	color: #007bff;
+	margin-bottom: 20px;
+}
+
+.item-description {
+	margin-bottom: 20px;
+}
+
+.item-price {
+	font-size: 24px;
+	font-weight: bold;
+	color: #007bff;
+	margin-bottom: 20px;
+}
+
+.quantity-label {
+	font-size: 16px;
+	margin-bottom: 5px; /* Add margin to separate from the following element */
+}
+
+.quantity-input {
+	width: 80px; /* Increase the width for a better input appearance */
+	height: 40px;
+	font-size: 16px;
+	text-align: center;
+}
+
+.add-to-cart {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.add-to-cart button {
+	width: 150px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<div class="sale-banner">
+			<span class="sale-text">Item is on sale!</span>
+		</div>
+		<main class="item-details">
+			<h1 class="item-name" th:text="${item.name}"></h1>
+			<h5 class="item-category" th:text="${item.category.name}"></h5>
+
+			<img class="item-image"
+				th:src="@{/uploads/items/{id}/{imageName}(id=${item.id}, imageName=${item.imgName})}" />
+
+			<p class="item-description" th:text="${item.description}"></p>
+			<p class="item-price">
+				$<span th:text="${item.price}"></span> <span th:if="${item.onSale}">
+					(On Sale!)</span>
+			</p>
+			<p class="quantity-label">
+				Quantity available: <span th:text="${item.quantity}"></span>
+			</p>
+		</main>
+
+		<div class="add-to-cart">
+			<form th:action="@{/cart/add/{itemId}(itemId=${item.id})}" method="post">
+				<input type="number" name="quantity" min="1" class="form-control quantity-input" placeholder="Quantity" required />
+				<button class="btn btn-primary" type="submit">Add to Cart</button>
+			</form>
+		</div>
+
+		<div th:replace="fragments/footer"></div>
+	</div>
+</body>
+</html>

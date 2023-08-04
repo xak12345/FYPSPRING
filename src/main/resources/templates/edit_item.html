@@ -1,0 +1,74 @@
+<!-- 21041531 Badi code & Function -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Booklink - Edit Item</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div th:replace="fragments/header"></div>
+        <main>
+            <div class="my-3">
+                <h1>Edit Item</h1>
+                <p class="lead">Use the form below to edit the item details:</p>
+            </div>
+            <form th:action="@{/items/edit/{id}(id=${item.id})}" th:object="${item}" method="post" enctype="multipart/form-data">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="item_seller" class="form-label">Seller Name</label>
+                        <input id="item_seller" class="form-control" type="text" th:field="*{seller}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="item_name" class="form-label">Name</label>
+                        <input id="item_name" class="form-control" type="text" th:field="*{name}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label for="item_description" class="form-label">Description</label>
+                        <input id="item_description" class="form-control" type="text" th:field="*{description}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="item_price" class="form-label">Price</label>
+                        <input id="item_price" class="form-control" type="text" th:field="*{price}" pattern="[0-9]+(\.[0-9]{1,2})?" required>
+                        <small class="form-text text-muted">Enter a valid price (e.g., 10 or 10.99)</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="item_quantity" class="form-label font-weight-bold">Quantity</label>
+                        <input id="item_quantity" class="form-control" type="number" th:field="*{quantity}" pattern="[0-9]+" required>
+                        <small class="form-text text-muted">Enter a valid quantity (e.g., 1, 10, 100)</small>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label for="item_category" class="form-label">Category</label>
+                        <select id="item_category" class="form-control" th:field="*{category}" required>
+                            <option th:each="cat : ${catList}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label for="itemImage" class="form-label">Item image</label>
+                        <input type="file" class="form-control" id="itemImage" name="itemImage" accept="image/png, image/jpeg" />
+                        <input type="hidden" name="originalImage" th:field="*{imgName}" th:value="${item.imgName}">
+                        <img class="mt-3 img-fluid" th:src="@{/uploads/items/{id}/{imgpath}(id=${item.id}, imgpath=${item.imgName})}">
+                    </div>
+                </div>
+                <div class="row mt-3 mb-5">
+                    <div class="col">
+                        <input type="submit" value="Update Item" class="btn btn-primary">
+                    </div>
+                </div>
+            </form>
+        </main>
+        <div th:replace="fragments/footer"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!-- 21041531 Badi's code and function -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Booklink - View Items</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/custom.css">
+<!-- Add custom CSS file -->
+<script src="/bootstrap/js/bootstrap.js"></script>
+
+</head>
+
+<style>
+.banner-img {
+	width: 100%; /* Adjust the width as needed */
+	height: auto; /* Maintain aspect ratio */
+}
+
+.jumbotron {
+	margin-bottom: 20px;
+}
+
+.banner-section {
+	margin-top: 20px;
+}
+
+body {
+	background-color: rgb(255, 128, 128); /* Light red background color */
+}
+
+.row {
+	margin-bottom: 20px; /* Add spacing between rows */
+}
+
+.banner-section {
+	margin-bottom: 20px; /* Add spacing after banner section */
+}
+
+.flex-container {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.blog-card {
+	width: 18rem;
+	margin-bottom: 20px;
+}
+
+.card {
+	width: 100%;
+	max-width: 300px;
+}
+
+.card-img-top {
+	height: 200px;
+	object-fit: contain;
+}
+</style>
+
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<main>
+			<div class="jumbotron">
+				<h1 class="display-4">Welcome to Booklink</h1>
+				<p class="lead">Discover a wide range of books at great prices!</p>
+
+			</div>
+
+			<div class="banner-section">
+				<div class="banner">
+					<img src="/images/banner1.png" alt="Banner Image"
+						class="banner-img">
+				</div>
+			</div>
+
+
+			<div class="container">
+				<div class="row justify-content-center">
+
+					<div class="col-md-4 mb-4" th:each="item : ${listItems}">
+						<div class="card">
+							<img
+								th:src="@{/uploads/items/{id}/{imageName}(id=${item.id}, imageName=${item.imgName})}"
+								alt="Item Image">
+							<div class="card-body">
+								<h5 th:text="${item.name}"></h5>
+								<p th:text="${item.description}"></p>
+								<p th:text="${item.price}">$10</p>
+								<a href="items" class="btn btn-primary">Browse Item</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 mb-4">
+						<div class="card">
+							<img src="/images/book2.jpg" class="card-img-top img-fluid"
+								alt="Book Image">
+							<div class="card-body">
+								<h5 class="card-title">Book Title</h5>
+								<p class="card-text">Book Description</p>
+								<p class="card-price">$15</p>
+								<a href="items" class="btn btn-primary">Browse Item</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 mb-4">
+						<div class="card">
+							<img src="/images/book1.jpg" class="card-img-top img-fluid"
+								alt="Book Image">
+							<div class="card-body">
+								<h5 class="card-title">Book Title</h5>
+								<p class="card-text">Book Description</p>
+								<p class="card-price">$12</p>
+								<a href="items" class="btn btn-primary">Browse Item</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="banner-section">
+				<div class="banner">
+					<img src="/images/banner2.png" alt="Banner Image"
+						class="banner-img">
+				</div>
+			</div>
+
+			<!-- New Phones -->
+			<section id="new-phones">
+				<div class="container">
+					<h4 class="font-rubik font-size-20">New Phones</h4>
+					<hr>
+
+					<!-- Owl Carousel -->
+					<div class="owl-carousel owl-theme">
+						<div class="item py-2 bg-light">
+							<div class="product font-rale">
+								<div class="d-flex flex-column">
+									<a href="#"><img src="../assets/products/1.png"
+										class="img-fluid" alt="pro1"></a>
+									<div class="text-center">
+										<h6>Redmi Note 7 Pro</h6>
+										<div class="rating text-warning font-size-12">
+											<span><i class="fas fa-star"></i></span> <span><i
+												class="fas fa-star"></i></span> <span><i class="fas fa-star"></i></span>
+											<span><i class="fas fa-star"></i></span> <span><i
+												class="far fa-star"></i></span>
+										</div>
+										<div class="price py-2">
+											<span>$122</span>
+										</div>
+										<button type="submit" class="btn btn-warning font-size-12">Add
+											to Cart</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="item py-2 bg-light">
+							<div class="product font-rale">
+								<div class="d-flex flex-column">
+									<a href="#"><img src="../assets/products/2.png"
+										class="img-fluid" alt="pro1"></a>
+									<div class="text-center">
+										<h6>Readme Note 7</h6>
+										<div class="rating text-warning font-size-12">
+											<span><i class="fas fa-star"></i></span> <span><i
+												class="fas fa-star"></i></span> <span><i class="fas fa-star"></i></span>
+											<span><i class="fas fa-star"></i></span> <span><i
+												class="far fa-star"></i></span>
+										</div>
+										<div class="price py-2">
+											<span>$122</span>
+										</div>
+										<button type="submit" class="btn btn-warning font-size-12">Add
+											to Cart</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- !owl carousel -->
+
+				</div>
+			</section>
+			<!-- !New Phones -->
+
+			<div class="banner-section">
+				<div class="banner">
+					<img src="/images/banner44.png" alt="Banner Image"
+						class="banner-img">
+				</div>
+			</div>
+
+			<!-- Blogs -->
+			<section id="blogs">
+				<div class="container py-4">
+					<h4 class="font-rubik font-size-20">Latest Blogs</h4>
+					<hr>
+
+					<div class="owl-carousel owl-theme flex-container">
+						<div class="item">
+							<div class="card border-0 font-rale blog-card">
+								<h5 class="card-title font-size-16 text-center">Review</h5>
+								<img src="images/Apex.jpg" alt="Apex Keyboard"
+									class="card-img-top">
+								<p class="card-text font-size-14 text-black-50 py-1">Lorem
+									ipsum dolor sit amet consectetur adipisicing elit. Veritatis
+									non iste sequi cupiditate tempora iure. Velit accusamus saepe
+									harum sed.</p>
+								<a href="#" class="color-second text-left">Go somewhere</a>
+							</div>
+						</div>
+						<div class="item">
+							<div class="card border-0 font-rale blog-card">
+								<h5 class="card-title font-size-16 text-center">Review</h5>
+								<img src="images/xbox.jpg" alt="blog image" class="card-img-top">
+								<p class="card-text font-size-14 text-black-50 py-1">Lorem
+									ipsum dolor sit amet consectetur adipisicing elit. Veritatis
+									non iste sequi cupiditate tempora iure. Velit accusamus saepe
+									harum sed.</p>
+								<a href="#" class="color-second text-left">Go somewhere</a>
+							</div>
+						</div>
+						<div class="item">
+							<div class="card border-0 font-rale blog-card">
+								<h5 class="card-title font-size-16 text-center">Review</h5>
+								<img src="images/PS5.jpg" alt="blog image" class="card-img-top">
+								<p class="card-text font-size-14 text-black-50 py-1">Lorem
+									ipsum dolor sit amet consectetur adipisicing elit. Veritatis
+									non iste sequi cupiditate tempora iure. Velit accusamus saepe
+									harum sed.</p>
+								<a href="#" class="color-second text-left">Go somewhere</a>
+							</div>
+						</div>
+						<div class="item">
+							<div class="card border-0 font-rale blog-card">
+								<h5 class="card-title font-size-16 text-center">Review</h5>
+								<img src="images/Switch.jpg" alt="blog image"
+									class="card-img-top">
+								<p class="card-text font-size-14 text-black-50 py-1">Lorem
+									ipsum dolor sit amet consectetur adipisicing elit. Veritatis
+									non iste sequi cupiditate tempora iure. Velit accusamus saepe
+									harum sed.</p>
+								<a href="#" class="color-second text-left">Go somewhere</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- !Blogs -->
+
+			<div class="row">
+				<div class="col-md-4 mb-4">
+					<div class="card">
+						<img src="/images/book1.jpg" class="card-img-top img-fluid"
+							alt="Book Image">
+						<div class="card-body">
+							<h5 class="card-title">Book Title</h5>
+							<p class="card-text">Book Description</p>
+							<p class="card-price">$8</p>
+							<a href="items" class="btn btn-primary">Browse Item</a>
+						</div>
+					</div>
+				</div>
+				<!-- Add more cards for other items -->
+				<div class="col-md-4 mb-4">
+					<div class="card">
+						<img src="/images/book2.jpg" class="card-img-top img-fluid"
+							alt="Book Image">
+						<div class="card-body">
+							<h5 class="card-title">Book Title</h5>
+							<p class="card-text">Book Description</p>
+							<p class="card-price">$20</p>
+							<a href="items" class="btn btn-primary">Browse Item</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 mb-4">
+					<div class="card">
+						<img src="/images/book1.jpg" class="card-img-top img-fluid"
+							alt="Book Image">
+						<div class="card-body">
+							<h5 class="card-title">Book Title</h5>
+							<p class="card-text">Book Description</p>
+							<p class="card-price">$14</p>
+							<a href="items" class="btn btn-primary">Browse Item</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="banner-section">
+				<div class="banner">
+					<img src="/images/banner3.png" alt="Banner Image"
+						class="banner-img">
+				</div>
+			</div>
+
+		</main>
+		<div th:replace="fragments/footer"></div>
+	</div>
+
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!-- 21041531 Badi's code and function -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Booklink - View Item</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/js/bootstrap.js"></script>
+<style>
+body {
+	padding-top: 20px;
+}
+
+.item-image {
+	max-width: 100%;
+	max-height: 400px;
+}
+
+.item-info {
+	padding: 20px;
+	border: 1px solid #eaeaea;
+}
+
+.price {
+	font-size: 24px;
+	font-weight: bold;
+	color: #007bff;
+}
+
+.quantity-label {
+	font-size: 16px;
+}
+
+.quantity-input {
+	width: 20px;
+	height: 40px;
+	font-size: 16px;
+	text-align: center;
+}
+</style>
+</head>
+
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<main>
+
+			<h1 th:text="${item.name}" class="mb-3"></h1>
+			<h5 th:text="${item.category.name}" class="mb-4 text-muted"></h5>
+
+			<div class="row">
+				<div class="col-md-6">
+					<img
+						th:src="@{/uploads/items/{id}/{imageName}(id=${item.id}, imageName=${item.imgName})}"
+						class="item-image mb-4" />
+				</div>
+				<div class="col-md-6">
+					<div class="item-info">
+						<p th:text="${item.description}" class="mb-4"></p>
+						<p class="price">
+							$<span th:text="${item.price}"></span>
+						</p>
+						<p class="quantity-label">
+							Quantity available: <span th:text="${item.quantity}"></span>
+						</p>
+						<form th:action="@{/cart/add/{itemId}(itemId=${item.id})}"
+							method="post" class="mb-4">
+							<div class="input-group">
+								<input type="number" name="discount" min="0" step="0.01"
+									placeholder="Discount (%)" class="form-control quantity-input"
+									required />
+								<div class="input-group-append">
+									<button class="btn btn-primary" type="button"
+										id="listSaleButton">List Sale</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</main>
+
+		<div th:replace="fragments/footer"></div>
+	</div>
+
+	<script>
+	document.getElementById('listSaleButton').addEventListener('click', function() {
+		// Get the item's price from the DOM and convert it to a number
+		let originalPrice = parseFloat(document.querySelector('.price span').innerText);
+
+		// Get the discount value from the input and convert it to a number
+		let discountValue = parseFloat(document.querySelector('[name="discount"]').value);
+
+		// Calculate the discounted price
+		let discount = originalPrice * (discountValue / 100);
+		let discountedPrice = originalPrice - discount;
+		discountedPrice = Math.round(discountedPrice * 100.0) / 100.0; // Round to 2 decimal places
+
+		// Update the price in the DOM
+		document.querySelector('.price span').innerText = discountedPrice;
+	});
+	</script>
+</body>
+
+</html>

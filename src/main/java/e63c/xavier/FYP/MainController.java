@@ -13,38 +13,44 @@
 
 package e63c.xavier.FYP;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+
 @Controller
 public class MainController {
+	@Autowired
+	private ItemRepository itemRepository;
+
 	@GetMapping("/")
-	public String Home(Model model) {
-		return "main";
+	public String home(Model model) {
+		List<Item> listItems = itemRepository.findAll();
+		model.addAttribute("listItems", listItems);
+		return "index";
 	}
-	
+
 	@GetMapping("/aboutus")
 	public String aboutUs() {
 		return "aboutus";
-	}	
-	
+	}
+
 	@GetMapping("/contactus")
 	public String ourContact() {
 		return "contactus";
 	}
-	
+
 	@GetMapping("/403")
 	public String error403() {
 		return "403";
 	}
-	
+
 	@GetMapping("/success2")
 	public String success2() {
 		return "success2";
 	}
-	
-
-	
 
 }

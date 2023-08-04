@@ -1,0 +1,155 @@
+<!-- 21041531 - Badi's Code & function-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Booklink - View Items</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<main>
+			<div class="h1">View Items</div>
+			<a href="/items/add" class="btn btn-primary">Add Item</a>
+
+			<div class="filter-section">
+				<label for="categorySelect">Category:</label> <select
+					id="categorySelect" onchange="applyFilters()">
+					<option value="">All</option>
+					<option th:each="item : ${listItems}"
+						th:value="${item.category.name}" th:text="${item.category.name}"></option>
+				</select> <label for="priceRange">Price Range:</label> <input type="number"
+					id="minPrice" placeholder="Min Price" /> <input type="number"
+					id="maxPrice" placeholder="Max Price" />
+				<button onclick="applyFilters()">Apply</button>
+			</div>
+
+			<input id='myInput' onkeyup='searchTable()' type='text'
+				placeholder="Type to search">
+			<table class="table table-hover align-middle mb-0 bg-white"
+				id='myTable'>
+				<thead>
+					<tr>
+						<th>Owner</th>
+						<th>Category</th>
+						<th>Item</th>
+						<th>Description</th>
+						<th>Quantity</th>
+						<th>Price</th>
+						<th
+							th:if="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'',''ROLE_SELLER'')')}">Action</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr th:each="item : ${listItems}">
+						<td th:text="${item.seller}"></td>
+						<td th:text="${item.category.name}"></td>
+						<td><a th:href="@{/items/{id}(id=${item.id})}"
+							th:text="${item.name}"></a></td>
+						<td th:text="${item.description}"></td>
+						<td th:text="${item.quantity}"></td>
+						<td th:text="${item.price}"></td>
+						<td>
+							<div class="d-flex justify-content-between">
+								<a
+									th:if="${#authorization.expression('hasRole(''ROLE_SELLER'') or hasRole(''ROLE_ADMIN'')')}"
+									th:href="@{/items/edit/{id}(id=${item.id})}"
+									class="btn btn-primary btn-sm">Edit</a> <a
+									th:if="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'',''ROLE_SELLER'')')}"
+									th:href="@{/items/delete/{id}(id=${item.id})}"
+									class="btn btn-danger btn-sm" onclick="myConfirm(event)">Delete</a>
+								<a
+									th:if="${!item.banned && #authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+									th:href="@{/items/ban/{id}(id=${item.id})}"
+									class="btn btn-warning btn-sm" onclick="myConfirm(event)">Ban</a>
+								<a
+									th:if="${item.banned && #authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+									th:href="@{/items/unban/{id}(id=${item.id})}"
+									class="btn btn-success btn-sm" onclick="myConfirm(event)">Unban</a>
+								<a
+									th:if="${!item.onSale && #authorization.expression('hasRole(''ROLE_SELLER'')')}"
+									th:href="@{/items/isOnSale/{id}(id=${item.id})}"
+									class="btn btn-info btn-sm">List Sale</a> 
+									
+								<a
+									th:if="${#authorization.expression('hasRole(''ROLE_SELLER'')')}"
+									th:href="@{/items/offSale/{id}(id=${item.id})}"
+									class="btn btn-secondary btn-sm">Remove Sale</a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+
+
+
+
+
+
+			</table>
+		</main>
+		<div th:replace="fragments/footer"></div>
+	</div>
+
+	<script>
+		function searchTable() {
+			var input, filter, found, table, tr, td, i, j;
+			input = document.getElementById("myInput");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+			tr = table.querySelectorAll("tbody tr:not(.header)");
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td");
+				for (j = 0; j < td.length; j++) {
+					if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+						found = true;
+					}
+				}
+				if (found) {
+					tr[i].style.display = "";
+					found = false;
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+
+		function applyFilters() {
+			var categorySelect = document.getElementById("categorySelect");
+			var minPrice = parseFloat(document.getElementById("minPrice").value);
+			var maxPrice = parseFloat(document.getElementById("maxPrice").value);
+
+			var table = document.getElementById("myTable");
+			var rows = table.querySelectorAll("tbody tr");
+
+			rows
+					.forEach(function(row) {
+						var category = row.querySelector("td:nth-child(1)").innerText;
+						var price = parseFloat(row
+								.querySelector("td:nth-child(5)").innerText);
+
+						var categoryFilter = categorySelect.value;
+						var priceFilter = !isNaN(minPrice) && !isNaN(maxPrice)
+								&& price >= minPrice && price <= maxPrice;
+
+						if (categoryFilter === ""
+								|| category === categoryFilter) {
+							row.style.display = priceFilter ? "" : "none";
+						} else {
+							row.style.display = "none";
+						}
+					});
+		}
+
+		function myConfirm(event) {
+			var result = confirm("Are you sure you want to Ban/Delete this item?");
+			if (!result) {
+				event.preventDefault(); // Prevent the default behavior (i.e., following the link)
+			}
+		}
+	</script>
+</body>
+</html>
