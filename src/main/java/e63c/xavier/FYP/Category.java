@@ -36,10 +36,10 @@ public class Category {
 	private String name;
 	
 	@OneToMany(mappedBy="category")
-	private Set<Product> products;
+	private Set<Item> items;
 	
-	public Set<Product> getProducts() {
-		return products;
+	public Set<Item> getItems() {
+		return items;
 	}
 
 	public int getId() {

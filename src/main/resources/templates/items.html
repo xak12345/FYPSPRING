@@ -147,8 +147,8 @@ body {
 
 	<div class="container">
 		<a sec:authorize="hasRole('ROLE_SELLER')"
-			href="http://localhost:8080/products/add" target="blank"
-			class="btn btn-danger">Add Product</a>
+			href="http://localhost:8080/items/add" target="blank"
+			class="btn btn-danger">Add Item</a>
 	</div>
 	
 	
@@ -171,16 +171,16 @@ body {
 				<span id="sellerNameSpan"></span>
 			</div>
 			<div>
-				<label>Product Name:</label>
-				<span id="productNameSpan"></span>
+				<label>Item Name:</label>
+				<span id="itemNameSpan"></span>
 			</div>
 			<div>
-				<label>Product Description:</label>
-				<span id="productDescriptionSpan"></span>
+				<label>Item Description:</label>
+				<span id="itemDescriptionSpan"></span>
 			</div>
 			<div>
-				<label>Product Price:</label>
-				<span id="productPriceSpan"></span>
+				<label>Item Price:</label>
+				<span id="itemPriceSpan"></span>
 			</div>
 			<img src="" alt="Popup Image" id="popupImage" style="max-width: 80%; max-height: 80%; margin-top: 10px;">
 		</div>
@@ -195,11 +195,11 @@ body {
 			if (adDetails) {
 				var popup = document.getElementById("popup");
 				document.getElementById("sellerNameSpan").innerText = adDetails.sellerName;
-				document.getElementById("productNameSpan").innerText = adDetails.productName;
-				document.getElementById("productDescriptionSpan").innerText = adDetails.productDescription;
-				document.getElementById("productPriceSpan").innerText = adDetails.productPrice;
+				document.getElementById("itemNameSpan").innerText = adDetails.itemName;
+				document.getElementById("itemDescriptionSpan").innerText = adDetails.itemDescription;
+				document.getElementById("itemPriceSpan").innerText = adDetails.itemPrice;
 				var img = document.getElementById("popupImage");
-				img.src = adDetails.productImage;
+				img.src = adDetails.itemImage;
 				popup.style.display = "block";
 			}
 		}
@@ -212,7 +212,7 @@ body {
 			localStorage.removeItem('adDetails');
 		}
 
-		// Show the popup when the products page loads
+		// Show the popup when the items page loads
 		document.addEventListener('DOMContentLoaded', function () {
 			showPopup();
 		});

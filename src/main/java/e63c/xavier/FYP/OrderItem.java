@@ -7,7 +7,7 @@
  * Student Name: Xavier
  * Student ID: 21020683
  * Class: E63C
- * Date created: 2023-Feb-09 9:48:05 am 
+ * Date created: 2023-Feb-09 11:06:49 am 
  * 
  */
 
@@ -23,26 +23,56 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+
 @Entity
-public class CartProduct {
+public class OrderItem {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+	private String orderId;
+	private String transactionId;
 	
 	@ManyToOne
 	@JoinColumn(name="member_id")
 	private Member member;
 	
 	@ManyToOne
-	@JoinColumn(name="product_id")
-	private Product product;
+	@JoinColumn(name="item_id")
+	private Item item;
 	
 	@NotNull
 	@Min(value=1, message="Quantity must be at least 1!")
 	private int quantity;
 	
+	private int price;
+	
 	@Transient
-	private double subTotal;
+	private double subtotal;
+	
+	public String getOrderId() {
+		return orderId;
+	}
+	
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	
+	public String getTransactionId() {
+		return transactionId;
+	}
+	
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
 	
 	public Member getMember() {
 		return member;
@@ -52,12 +82,12 @@ public class CartProduct {
 		this.member = member;
 	}
 	
-	public Product getProduct() {
-		return product;
+	public Item getItem() {
+		return item;
 	}
 	
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 	
 	public int getQuantity() {
@@ -68,15 +98,14 @@ public class CartProduct {
 		this.quantity = quantity;
 	}
 	
-	public double getSubTotal() {
-		subTotal = quantity * product.getPrice();
-		return subTotal;
+	public double getSubtotal() {
+		return subtotal;
 	}
-
-	public void setSubTotal(double subTotal) {
-		this.subTotal = subTotal;
+	
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
 	}
-
+	
 	public int getId() {
 		return id;
 	}

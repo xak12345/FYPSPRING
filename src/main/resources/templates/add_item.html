@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<title>Booklink - Add Product</title>
+<title>Booklink - Add Item</title>
 
 <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 <script src="/bootstrap/css/bootstrap.js"></script>
@@ -17,13 +17,13 @@ body {
 	<div class="container">
 		<div th:replace="fragments/header"></div>
 		<main>
-			<h1>Add new Product</h1>
-			<form class="needs-validation" th:action="@{/products/save}" method="post" enctype="multipart/form-data"
-			th:object="${product}" novalidate>
+			<h1>Add new Item</h1>
+			<form class="needs-validation" th:action="@{/items/save}" method="post" enctype="multipart/form-data"
+			th:object="${item}" novalidate>
 			
 			<div class="mb-3 col-5">					
-					<label for="product_seller" class="form-label">Seller: </label> <input
-					id="product_seller" type="text" class="form-control"
+					<label for="item_seller" class="form-label">Seller: </label> <input
+					id="item_seller" type="text" class="form-control"
 					th:field="*{seller}" required minlength=5 maxlength=50 />	
 					<div class="invalid-feedback"> Front- Please enter a valid seller.</div>
 					<p class="text-danger" th:if="${#fields.hasErrors('seller')}" th:errors="*{seller}"></p>
@@ -31,8 +31,8 @@ body {
 				</div>
 
 				<div class="mb-3 col-5">					
-					<label for="product_name" class="form-label">Name: </label> <input
-					id="product_name" type="text" class="form-control"
+					<label for="item_name" class="form-label">Name: </label> <input
+					id="item_name" type="text" class="form-control"
 					th:field="*{name}" required minlength=5 maxlength=50 />	
 					<div class="invalid-feedback"> Front- Please enter a valid name.</div>
 					<p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
@@ -40,8 +40,8 @@ body {
 				</div>
 
 				<div class="mb-3 col-5">
-					<label for="product_description" class="form-label">Description: </label> <input
-					id="product_description" type="text" class="form-control"
+					<label for="item_description" class="form-label">Description: </label> <input
+					id="item_description" type="text" class="form-control"
 					th:field="*{description}" required minlength=5 maxlength=100 />	
 					<div class="invalid-feedback"> Front- Please enter a valid description.</div>
 					<p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>	
@@ -49,24 +49,24 @@ body {
 				</div>
 
 				<div class="mb-3 col-5">
-					<label for="product_price" class="form-label">Price</label> <input
-						id="product_price" class="form-control" type="text"
+					<label for="item_price" class="form-label">Price</label> <input
+						id="item_price" class="form-control" type="text"
 						th:field="*{price}" required minlength=0 />
 						
 					<p class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>	
 				</div>
 
 				<div class="mb-3 col-5">
-					<label for="product_quantity" class="form-label">Quantity</label> <input
-						id="product_quantity" class="form-control" type="text"
+					<label for="item_quantity" class="form-label">Quantity</label> <input
+						id="item_quantity" class="form-control" type="text"
 						th:field="*{quantity}" required minlength=0 />
 					<p class="text-danger" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></p>
 				</div>
 
 
 				<div class="mb-3 col-5">
-					<label for="product_category" class="form-label">Category: </label> <select
-						id="product_category" class="form-control" th:field="*{category}" required>
+					<label for="item_category" class="form-label">Category: </label> <select
+						id="item_category" class="form-control" th:field="*{category}" required>
 						<option value="">Choose one</option>
 						<option th:each="cat : ${catList}" th:value="${cat.id}"
 							th:text="${cat.name}"></option>
@@ -76,12 +76,12 @@ body {
 				</div>
 
 				<div class="mb-3 col-5">
-					<label for="productImage" class="form-label">Product image: </label> 
-					<input type="file" class="form-control" id="productImage" name="productImage" accept="image/png, image/jpeg" required/>
+					<label for="itemImage" class="form-label">Item image: </label> 
+					<input type="file" class="form-control" id="itemImage" name="itemImage" accept="image/png, image/jpeg" required/>
 				</div>
 				
 				<div class="mt-5">
-					<input type="submit" value="Add Product">
+					<input type="submit" value="Add Item">
 				</div>
 
 

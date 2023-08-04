@@ -19,7 +19,7 @@
         <div class="col-11">
             <div class="container ">
                 <div th:replace="fragments/header"></div>
-                <!-- shopping cart products header -->
+                <!-- shopping cart items header -->
                 <div class="row m-3 border-top border-bottom fs-5">
                     <div class="col">Image</div>
                     <div class="col">Seller</div>
@@ -31,18 +31,18 @@
                     <div class="col">Quantity</div>
                 </div>
                 <!-- shopping cart rows -->
-                <div class="row m-3 border-bottom" th:each="orderProduct : ${orderList}">
+                <div class="row m-3 border-bottom" th:each="orderItem : ${orderList}">
                     <div class="col mb-3">
                         <img width="100px"
-                             th:src="@{/uploads/products/{id}/{imgName}(id=${orderProduct.product.id}, imgName=${orderProduct.product.imgName})}" />
+                             th:src="@{/uploads/items/{id}/{imgName}(id=${orderItem.item.id}, imgName=${orderItem.item.imgName})}" />
                     </div>
-                    <div class="col mb-3" th:text="${orderProduct.product.seller}"></div>
-                    <div class="col mb-3" th:text="${orderProduct.Id}"></div>
-                    <div class="col mb-3" th:text="${orderProduct.orderId}"></div>
-                    <div class="col mb-3" th:text="${orderProduct.transactionId}"></div>
-                    <div class="col mb-3" th:text="${orderProduct.product.name}"></div>
-                    <div class="col mb-3" th:text="${orderProduct.product.price}"></div>
-                    <div class="col mb-3" th:text="${orderProduct.quantity}"></div>
+                    <div class="col mb-3" th:text="${orderItem.item.seller}"></div>
+                    <div class="col mb-3" th:text="${orderItem.Id}"></div>
+                    <div class="col mb-3" th:text="${orderItem.orderId}"></div>
+                    <div class="col mb-3" th:text="${orderItem.transactionId}"></div>
+                    <div class="col mb-3" th:text="${orderItem.item.name}"></div>
+                    <div class="col mb-3" th:text="${orderItem.item.price}"></div>
+                    <div class="col mb-3" th:text="${orderItem.quantity}"></div>
                 </div>
 
                 <!-- Overall Total Price -->

@@ -33,18 +33,18 @@ body {
 					</tr>
 				</thead>
 				<tbody>
-					<th:block th:each="mouse: ${listOfProducts}">
+					<th:block th:each="mouse: ${listOfItems}">
 						<tr>
 						<td th:text="${mouse.seller}"></td>
 							<td th:text="${mouse.category.name}"></td>
-							<td><a th:href="@{/products/{id}(id=${mouse.id})}"
+							<td><a th:href="@{/items/{id}(id=${mouse.id})}"
 								th:text="${mouse.name}"></a></td>
 							<td th:text="${mouse.description}"></td>
 							<td th:text="${mouse.price}"></td>
 							<td th:text="${mouse.quantity}"></td>
-							<td><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/products/edit/{id}(id=${mouse.id})}"><button
+							<td><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/items/edit/{id}(id=${mouse.id})}"><button
 										type="button" class="btn btn-primary">Edit</button></a></td>
-							<td><a sec:authorize="hasRole('ADMIN')" th:href="@{/products/delete/{id}(id=${mouse.id})}"><button
+							<td><a sec:authorize="hasRole('ADMIN')" th:href="@{/items/delete/{id}(id=${mouse.id})}"><button
 										type="button" class="btn btn-warning" onclick="myConfirm(event)">Delete</button></a></td>
 						</tr>
 					</th:block>

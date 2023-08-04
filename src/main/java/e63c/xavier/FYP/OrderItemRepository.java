@@ -7,7 +7,7 @@
  * Student Name: Xavier
  * Student ID: 21020683
  * Class: E63C
- * Date created: 2023-Feb-09 9:51:19 am 
+ * Date created: 2023-Feb-09 11:09:52 am 
  * 
  */
 
@@ -16,11 +16,11 @@ package e63c.xavier.FYP;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface CartProductRepository extends JpaRepository<CartProduct, Integer> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
+
+	List<OrderItem> findByMemberId(int loggedInMemberId);
 	
-	public List<CartProduct>findByMemberId(int id);
-
-	public CartProduct findByMemberIdAndProductId(int memberId, int productId);
 
 }

@@ -30,8 +30,8 @@ import org.hibernate.annotations.ParamDef;
 //@Table(name = "member")
 @SQLDelete(sql = "UPDATE member SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
-@FilterDef(name = "deletedProductFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedProductFilter", condition = "deleted = :isDeleted")
+@FilterDef(name = "deletedItemFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedItemFilter", condition = "deleted = :isDeleted")
 public class Member {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

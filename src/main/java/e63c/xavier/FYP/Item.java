@@ -25,17 +25,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-public class Product{
+public class Item{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
 	@NotNull
-	@NotEmpty(message="Backend - Product name cannot be empty!")
+	@NotEmpty(message="Backend - Item name cannot be empty!")
 	private String name;
 	
 	@NotNull
-	@NotEmpty(message="Backend - Product description cannot be empty!")
+	@NotEmpty(message="Backend - Item description cannot be empty!")
 	@Size(min=5, max=100, message="Description length must be between 5 and 100 characters!")
 	private String description;
 	

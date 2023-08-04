@@ -34,59 +34,59 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-public class ProductController {
+public class ItemController {
 
 	@Autowired
-	private ProductRepository productRepository;
+	private ItemRepository itemRepository;
 
 	@Autowired
 	private CategoryRepository categoryRepository;
 
-	@GetMapping("/products")
-	public String viewProducts(Model model) {
-		List<Product> listProducts = productRepository.findAll();
-		model.addAttribute("listProducts", listProducts);
-		return "products";
+	@GetMapping("/items")
+	public String viewItems(Model model) {
+		List<Item> listItems = itemRepository.findAll();
+		model.addAttribute("listItems", listItems);
+		return "items";
 
 	}
 
-	@GetMapping("/products/add")
-	public String addProduct(Model model) {
-		model.addAttribute("product", new Product());
+	@GetMapping("/items/add")
+	public String addItem(Model model) {
+		model.addAttribute("item", new Item());
 		List<Category> catList = categoryRepository.findAll();
 		model.addAttribute("catList", catList);
-		return "add_product";
+		return "add_item";
 	}
 
-	@GetMapping("/products/{id}")
-	public String viewSingleProduct(@PathVariable("id") Integer id, Model model) {
-		Product product = productRepository.getById(id);
-		model.addAttribute("product", product);
-		return "view_single_products";
+	@GetMapping("/items/{id}")
+	public String viewSingleItem(@PathVariable("id") Integer id, Model model) {
+		Item item = itemRepository.getById(id);
+		model.addAttribute("item", item);
+		return "view_single_items";
 	}
 
-	@PostMapping("/products/save")
-	public String saveProduct(@Valid Product product, BindingResult bindingResult,
-			@RequestParam("productImage") MultipartFile imgFile, Model model) {
+	@PostMapping("/items/save")
+	public String saveItem(@Valid Item item, BindingResult bindingResult,
+			@RequestParam("itemImage") MultipartFile imgFile, Model model) {
 
 		if (bindingResult.hasErrors()) {
 			System.out.println(bindingResult.getFieldError());
 			List<Category> catList = categoryRepository.findAll();
 			model.addAttribute("catList", catList);
-			return "add_product";
+			return "add_item";
 		}
 
 		String imageName = imgFile.getOriginalFilename();
 
-		// Set the image name in product object
-		product.setImgName(imageName);
+		// Set the image name in item object
+		item.setImgName(imageName);
 
-		// Save the product obj to the db
-		Product savedProduct = productRepository.save(product);
+		// Save the item obj to the db
+		Item savedItem = itemRepository.save(item);
 
 		try {
 			// Preparing the directory path
-			String uploadDir = "uploads/products/" + savedProduct.getId();
+			String uploadDir = "uploads/items/" + savedItem.getId();
 			Path uploadPath = Paths.get(uploadDir);
 			System.out.println("Directory path: " + uploadPath);
 
@@ -106,26 +106,26 @@ public class ProductController {
 			io.printStackTrace();
 		}
 
-		return "redirect:/products";
+		return "redirect:/items";
 	}
 
-	@GetMapping("/products/edit/{id}")
-	public String editProduct(@PathVariable("id") Integer id, Model model) {
-		Product product = productRepository.getById(id);
-		model.addAttribute("product", product);
+	@GetMapping("/items/edit/{id}")
+	public String editItem(@PathVariable("id") Integer id, Model model) {
+		Item item = itemRepository.getById(id);
+		model.addAttribute("item", item);
 		List<Category> catList = categoryRepository.findAll();
 		model.addAttribute("catList", catList);
-		return "edit_products";
+		return "edit_items";
 
 	}
 
-	@PostMapping("/products/edit/{id}")
-	public String saveUpdatedProduct(Product product, @RequestParam("productImage") MultipartFile imgFile) {
+	@PostMapping("/items/edit/{id}")
+	public String saveUpdatedItem(Item item, @RequestParam("itemImage") MultipartFile imgFile) {
 		String imageName = imgFile.getOriginalFilename();
-		product.setImgName(imageName);
-		Product savedProduct = productRepository.save(product);
+		item.setImgName(imageName);
+		Item savedItem = itemRepository.save(item);
 		try {
-			String uploadDir = "uploads/products/" + savedProduct.getId();
+			String uploadDir = "uploads/items/" + savedItem.getId();
 			Path uploadPath = Paths.get(uploadDir);
 			System.out.println("Directory path:" + uploadPath);
 			if (!Files.exists(uploadPath)) {
@@ -139,43 +139,43 @@ public class ProductController {
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
-		return "redirect:/products";
+		return "redirect:/items";
 	}
 
-	@GetMapping("/products/delete/{id}")
-	public String deleteProduct(@PathVariable("id") Integer id) {
-		productRepository.deleteById(id);
-		return "redirect:/products";
+	@GetMapping("/items/delete/{id}")
+	public String deleteItem(@PathVariable("id") Integer id) {
+		itemRepository.deleteById(id);
+		return "redirect:/items";
 	}
 
 	@GetMapping("/phones")
 	public String getPhone(Model model) {
 		Category cat = categoryRepository.findById(1).get();
-		Set<Product> listOfProducts = cat.getProducts();
-		model.addAttribute("listOfProducts", listOfProducts);
+		Set<Item> listOfItems = cat.getItems();
+		model.addAttribute("listOfItems", listOfItems);
 		return "phones";
 	}
 
 	@GetMapping("/earbuds") public String getEarbud(Model model) { 
-	//find the product list which has category id of earbud
-	  Category cat = categoryRepository.findById(2).get(); Set<Product> listOfProducts =
-	  cat.getProducts();
-	  model.addAttribute("listOfProducts", listOfProducts);
+	//find the item list which has category id of earbud
+	  Category cat = categoryRepository.findById(2).get(); Set<Item> listOfItems =
+	  cat.getItems();
+	  model.addAttribute("listOfItems", listOfItems);
 	  return "earbuds"; }
 
 	@GetMapping("/laptops")
 	public String getLaptop(Model model) {
 		Category cat = categoryRepository.findById(3).get();
-		Set<Product> listOfProducts = cat.getProducts();
-		model.addAttribute("listOfProducts", listOfProducts);
+		Set<Item> listOfItems = cat.getItems();
+		model.addAttribute("listOfItems", listOfItems);
 		return "laptops";
 	}
 
 	@GetMapping("/mouses")
 	public String getMouse(Model model) {
 		Category cat = categoryRepository.findById(4).get();
-		Set<Product> listOfProducts = cat.getProducts();
-		model.addAttribute("listOfProducts", listOfProducts);
+		Set<Item> listOfItems = cat.getItems();
+		model.addAttribute("listOfItems", listOfItems);
 		return "mouses";
 	}
 	
@@ -184,13 +184,13 @@ public class ProductController {
         return "generatead";
     }
 
-//	@GetMapping(path = "/products/category/{id}")
-//	public String getProductsbyCategory(@PathVariable Integer id, Model model) {
+//	@GetMapping(path = "/items/category/{id}")
+//	public String getItemsbyCategory(@PathVariable Integer id, Model model) {
 //
-//		List<Product> listProducts = productRepository.findByCategory_Id(id);
+//		List<Item> listItems = itemRepository.findByCategory_Id(id);
 //
-//		model.addAttribute("listProducts", listProducts);
-//		return "products";
+//		model.addAttribute("listItems", listItems);
+//		return "items";
 //	}
 
 }

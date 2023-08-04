@@ -33,19 +33,19 @@ body {
 					</tr>
 				</thead>
 				<tbody>
-					<th:block th:each="earbud: ${listOfProducts}">
+					<th:block th:each="earbud: ${listOfItems}">
 						<tr>
 							<td th:text="${earbud.seller}"></td>
 							<td th:text="${earbud.category.name}"></td>
-							<td><a th:href="@{/products/{id}(id=${earbud.id})}"
+							<td><a th:href="@{/items/{id}(id=${earbud.id})}"
 								th:text="${earbud.name}"></a></td>
 							<td th:text="${earbud.description}"></td>
 							<td th:text="${earbud.price}"></td>
 							<td th:text="${earbud.quantity}"></td>
 							
-							<td><a sec:authorize="hasRole('ADMIN')" th:href="@{/products/edit/{id}(id=${earbud.id})}"><button
+							<td><a sec:authorize="hasRole('ADMIN')" th:href="@{/items/edit/{id}(id=${earbud.id})}"><button
 										type="button" class="btn btn-primary">Edit</button></a></td>
-							<td><a sec:authorize="hasRole('ADMIN')" th:href="@{/products/delete/{id}(id=${earbud.id})}"><button
+							<td><a sec:authorize="hasRole('ADMIN')" th:href="@{/items/delete/{id}(id=${earbud.id})}"><button
 										type="button" class="btn btn-warning" onclick="myConfirm(event)">Delete</button></a></td>
 										
 						</tr>

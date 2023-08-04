@@ -45,7 +45,7 @@
                     <!-- shopping cart -->
                     <div class="col-8">
                         <div class="container">
-                            <!-- shopping cart products header -->
+                            <!-- shopping cart items header -->
                             <div class="row m-3 border-top border-bottom fs-5">
                                 <div class="col">SELLER</div>
                                 <div class="col">PRODUCTS</div>
@@ -54,32 +54,32 @@
                                 <div class="col">SUBTOTAL</div>
                             </div>
                             <!-- shopping cart rows -->
-                            <div class="row m-3 border-bottom" th:each="cartProduct : ${cartProductList}">
-                                <!-- Product name, description, image -->
+                            <div class="row m-3 border-bottom" th:each="cartItem : ${cartItemList}">
+                                <!-- Item name, description, image -->
                                 
                                 <div class="col mb-3">
-                                    <div class="col align-self-center" th:text="${cartProduct.product.seller}"></div>
+                                    <div class="col align-self-center" th:text="${cartItem.item.seller}"></div>
                                 </div>
                                 
                                 <div class="col mb-3">
-                                    <h5 th:text="${cartProduct.product.name}"></h5>
-                                    <p th:text="${cartProduct.product.description}"></p>
-                                    <img width="100px" th:src="@{/uploads/products/{id}/{imageName}(id=${cartProduct.product.id}, imageName=${cartProduct.product.imgName})}">
+                                    <h5 th:text="${cartItem.item.name}"></h5>
+                                    <p th:text="${cartItem.item.description}"></p>
+                                    <img width="100px" th:src="@{/uploads/items/{id}/{imageName}(id=${cartItem.item.id}, imageName=${cartItem.item.imgName})}">
                                 </div>
-                                <!-- Product quantity, price, links -->
+                                <!-- Item quantity, price, links -->
                                 <div class="col mb-3">
-                                    <div class="col align-self-center" th:text="'$'+${cartProduct.product.price}"></div>
+                                    <div class="col align-self-center" th:text="'$'+${cartItem.item.price}"></div>
                                 </div>
                                 <div class="col mb-3">
                                     <div class="col align-self-center">
-                                        <!-- Update product quantity form -->
-                                        <form class="needs-validation" th:action="@{/cart/update/{id}(id=${cartProduct.id})}" method="post" novalidate>
+                                        <!-- Update item quantity form -->
+                                        <form class="needs-validation" th:action="@{/cart/update/{id}(id=${cartItem.id})}" method="post" novalidate>
                                             <div class="input-group">
-                                                <input type="number" name="qty" th:value="${cartProduct.quantity}" th:id="${cartProduct.id}" required value="1" min="1" class="form-control" />
+                                                <input type="number" name="qty" th:value="${cartItem.quantity}" th:id="${cartItem.id}" required value="1" min="1" class="form-control" />
                                                 <div class="invalid-feedback">Enter a valid quantity</div>
                                                 <div class="input-group-append">
-                                                    <!-- Remove product link -->
-                                                    <a class="btn btn-danger remove-icon" th:href="@{/cart/remove/{id}(id=${cartProduct.id})}">
+                                                    <!-- Remove item link -->
+                                                    <a class="btn btn-danger remove-icon" th:href="@{/cart/remove/{id}(id=${cartItem.id})}">
                                                         <i class="fa fa-close" style="font-size:20px"></i>
                                                     </a>
                                                 </div>
@@ -88,7 +88,7 @@
                                     </div>
                                 </div>
                                 <div class="col mb-3">
-                                    <div class="col align-self-center" th:text="'$'+${cartProduct.subTotal}"></div>
+                                    <div class="col align-self-center" th:text="'$'+${cartItem.subTotal}"></div>
                                 </div>
                             </div>
                         </div>
@@ -100,12 +100,12 @@
                                 <div class="col text-center fs-3">ORDER SUMMARY</div>
                             </div>
                             <!-- Order summary rows -->
-                            <div class="row m-3 border-bottom" th:each="cartProduct : ${cartProductList}">
+                            <div class="row m-3 border-bottom" th:each="cartItem : ${cartItemList}">
                                 <div class="col fs-6">
-                                    <p th:text="${cartProduct.product.name}+' x '+${cartProduct.quantity}"></p>
+                                    <p th:text="${cartItem.item.name}+' x '+${cartItem.quantity}"></p>
                                 </div>
                                 <div class="col fs-6 text-end">
-                                    <p th:text="'$'+${cartProduct.subTotal}"></p>
+                                    <p th:text="'$'+${cartItem.subTotal}"></p>
                                 </div>
                             </div>
                             <!-- COMPLETE CODE HERE -->
@@ -120,7 +120,7 @@
                             <div th:if="${#request.isUserInRole('ROLE_ADMIN')}">
                                 <!-- Display alert for ROLE_ADMIN users -->
                                 <div class="alert alert-info mt-3" role="alert">
-                                    Switch to a BUYER/SELLER account before purchasing products!
+                                    Switch to a BUYER/SELLER account before purchasing items!
                                 </div>
                             </div>
                             <div th:unless="${#request.isUserInRole('ROLE_ADMIN')}">

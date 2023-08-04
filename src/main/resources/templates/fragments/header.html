@@ -30,7 +30,7 @@ font-family: 'Poppins', sans-serif;
 					<li class="nav-item"><a href="http://localhost:8080" class="nav-link text-white">Home</a>
 					</li>
 
-					<li class="nav-item"><a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_BUYER','ROLE_SELLER')" href="/products" class="nav-link text-white">Products</a>
+					<li class="nav-item"><a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_BUYER','ROLE_SELLER')" href="/items" class="nav-link text-white">Items</a>
 					</li>
 					
 					<li class="nav-item"><a sec:authorize="hasAnyRole('ROLE_BUYER','ROLE_SELLER')" class="nav-link text-white" href="/cart">Cart</a>

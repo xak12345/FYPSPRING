@@ -46,16 +46,16 @@ public class MemberController {
     private MemberRepository memberRepository;
     
     @Autowired
-    private OrderProductRepository orderRepo;
+    private OrderItemRepository orderRepo;
     
 
     @GetMapping("/members")
     public String viewMember(Model model) {
         Session session = entityManager.unwrap(Session.class);
-        org.hibernate.Filter filter = session.enableFilter("deletedProductFilter");
+        org.hibernate.Filter filter = session.enableFilter("deletedItemFilter");
         filter.setParameter("isDeleted", false);
         List<Member> listMembers = memberRepository.findAll();
-        session.disableFilter("deletedProductFilter");
+        session.disableFilter("deletedItemFilter");
 
         // Calculate and add the purchase history total price for each member
         for (Member member : listMembers) {
@@ -64,11 +64,11 @@ public class MemberController {
         }
 
         // Add the totalPriceBySeller attribute to the model
-        List<OrderProduct> orderList = orderRepo.findAll();
+        List<OrderItem> orderList = orderRepo.findAll();
         Map<String, Double> totalPriceBySeller = new HashMap<>();
-        for (OrderProduct orderProduct : orderList) {
-            String seller = orderProduct.getProduct().getSeller();
-            double price = orderProduct.getProduct().getPrice();
+        for (OrderItem orderItem : orderList) {
+            String seller = orderItem.getItem().getSeller();
+            double price = orderItem.getItem().getPrice();
             totalPriceBySeller.put(seller, totalPriceBySeller.getOrDefault(seller, 0.0) + price);
         }
         model.addAttribute("totalPriceBySeller", totalPriceBySeller);
@@ -80,10 +80,10 @@ public class MemberController {
 
     // Helper method to calculate the purchase history total price for a member
     private double calculatePurchaseHistoryTotalPrice(int memberId) {
-        List<OrderProduct> orderList = orderRepo.findByMemberId(memberId);
+        List<OrderItem> orderList = orderRepo.findByMemberId(memberId);
         double totalPrice = 0.0;
-        for (OrderProduct orderProduct : orderList) {
-            totalPrice += orderProduct.getProduct().getPrice();
+        for (OrderItem orderItem : orderList) {
+            totalPrice += orderItem.getItem().getPrice();
         }
         return totalPrice;
     }

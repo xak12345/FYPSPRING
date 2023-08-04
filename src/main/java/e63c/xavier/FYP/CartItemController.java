@@ -31,19 +31,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class CartProductController {
+public class CartItemController {
 
 	@Autowired
-	private CartProductRepository cartProductRepo;
+	private CartItemRepository cartItemRepo;
 
 	@Autowired
-	private ProductRepository productRepo;
+	private ItemRepository itemRepo;
 
 	@Autowired
 	private MemberRepository memberRepo;
 
 	@Autowired
-	private OrderProductRepository orderRepo;
+	private OrderItemRepository orderRepo;
 
 	@Autowired
 	private JavaMailSender javaMailSender;
@@ -56,25 +56,25 @@ public class CartProductController {
 				.getPrincipal();
 		int loggedInMemberId = loggedInMember.getMember().getId();
 
-		// Get shopping cart products added by this user
-		// *Hint: You will need to use the method we added in the CartProductRepository
-		List<CartProduct> cartProductList = cartProductRepo.findByMemberId(loggedInMemberId);
+		// Get shopping cart items added by this user
+		// *Hint: You will need to use the method we added in the CartItemRepository
+		List<CartItem> cartItemList = cartItemRepo.findByMemberId(loggedInMemberId);
 
-		// Add the shopping cart products to the model
-		model.addAttribute("cartProductList", cartProductList);
+		// Add the shopping cart items to the model
+		model.addAttribute("cartItemList", cartItemList);
 
-		// Calculate the total cost of all products in the shopping cart
+		// Calculate the total cost of all items in the shopping cart
 		double cartTotal = 0.0;
 
-		for (int i = 0; i < cartProductList.size(); i++) {
+		for (int i = 0; i < cartItemList.size(); i++) {
 
-			CartProduct currentCartProduct = cartProductList.get(i);
-			int productQuantityInCart = currentCartProduct.getQuantity();
+			CartItem currentCartItem = cartItemList.get(i);
+			int itemQuantityInCart = currentCartItem.getQuantity();
 
-			Product product = currentCartProduct.getProduct();
-			double productPrice = product.getPrice();
+			Item item = currentCartItem.getItem();
+			double itemPrice = item.getPrice();
 
-			cartTotal += productPrice * productQuantityInCart;
+			cartTotal += itemPrice * itemQuantityInCart;
 
 		}
 
@@ -85,8 +85,8 @@ public class CartProductController {
 		return "cart";
 	}
 
-	@PostMapping("/cart/add/{productId}")
-	public String addToCart(@PathVariable("productId") int productId, @RequestParam("quantity") int quantity,
+	@PostMapping("/cart/add/{itemId}")
+	public String addToCart(@PathVariable("itemId") int itemId, @RequestParam("quantity") int quantity,
 			Principal principal) {
 
 		// Get currently logged in user
@@ -94,35 +94,35 @@ public class CartProductController {
 				.getPrincipal();
 		int loggedInMemberId = loggedInMember.getMember().getId();
 
-		// Check in the cartProductRepo if product was previously added by user.
-		// *Hint: we will need to write a new method in the CartProductRepository
-		CartProduct cartProduct = cartProductRepo.findByMemberIdAndProductId(loggedInMemberId, productId);
+		// Check in the cartItemRepo if item was previously added by user.
+		// *Hint: we will need to write a new method in the CartItemRepository
+		CartItem cartItem = cartItemRepo.findByMemberIdAndItemId(loggedInMemberId, itemId);
 
-		// if the product was previously added, then we get the quantity that was
+		// if the item was previously added, then we get the quantity that was
 		// previously added and increase that
-		// Save the CartProduct object back to the repository
-		if (cartProduct != null) {
-			int currentQuantity = cartProduct.getQuantity();
-			cartProduct.setQuantity(quantity + currentQuantity);
-			cartProductRepo.save(cartProduct);
+		// Save the CartItem object back to the repository
+		if (cartItem != null) {
+			int currentQuantity = cartItem.getQuantity();
+			cartItem.setQuantity(quantity + currentQuantity);
+			cartItemRepo.save(cartItem);
 		} else {
 
-			// if the product was NOT previously added,
-			// then prepare the product and member objects
-			Product product = productRepo.getById(productId);
+			// if the item was NOT previously added,
+			// then prepare the item and member objects
+			Item item = itemRepo.getById(itemId);
 			Member member = memberRepo.getById(loggedInMemberId);
 
-			// Create a new CartProduct object
-			CartProduct newCartProduct = new CartProduct();
+			// Create a new CartItem object
+			CartItem newCartItem = new CartItem();
 
-			// Set the product and member as well as the new quantity in the new CartProduct
+			// Set the item and member as well as the new quantity in the new CartItem
 			// object
-			newCartProduct.setProduct(product);
-			newCartProduct.setMember(member);
-			newCartProduct.setQuantity(quantity);
+			newCartItem.setItem(item);
+			newCartItem.setMember(member);
+			newCartItem.setQuantity(quantity);
 
-			// Save the new CartProduct object to the repository
-			cartProductRepo.save(newCartProduct);
+			// Save the new CartItem object to the repository
+			cartItemRepo.save(newCartItem);
 
 		}
 
@@ -130,25 +130,25 @@ public class CartProductController {
 	}
 
 	@PostMapping("/cart/update/{id}")
-	public String updateCart(@PathVariable("id") int cartProductId, @RequestParam("qty") int qty) {
+	public String updateCart(@PathVariable("id") int cartItemId, @RequestParam("qty") int qty) {
 
-// Get cartProduct object by cartProduct's id
-		CartProduct cartProduct = cartProductRepo.getById(cartProductId);
+// Get cartItem object by cartItem's id
+		CartItem cartItem = cartItemRepo.getById(cartItemId);
 
-		// Set the quantity of the carProduct object retrieved
-		cartProduct.setQuantity(qty);
+		// Set the quantity of the carItem object retrieved
+		cartItem.setQuantity(qty);
 
-		// Save the cartProduct back to the cartProductRepo
-		cartProductRepo.save(cartProduct);
+		// Save the cartItem back to the cartItemRepo
+		cartItemRepo.save(cartItem);
 
 		return "redirect:/cart";
 	}
 
 	@GetMapping("/cart/remove/{id}")
-	public String removeFromCart(@PathVariable("id") int cartProductId) {
+	public String removeFromCart(@PathVariable("id") int cartItemId) {
 
-		// Remove product from cartProductRepo
-		cartProductRepo.deleteById(cartProductId);
+		// Remove item from cartItemRepo
+		cartItemRepo.deleteById(cartItemId);
 
 		return "redirect:/cart";
 	}
@@ -157,42 +157,42 @@ public class CartProductController {
 	  public String processOrder(Model model, @RequestParam("cartTotal") double cartTotal,
 	    @RequestParam("memberId") int memberId, @RequestParam("orderId") String orderId,
 	    @RequestParam("transactionId") String transactionId) {
-	       // Retrieve cart products purchased  
-	    List<CartProduct> cartProductList = cartProductRepo.findByMemberId(memberId);
+	       // Retrieve cart items purchased  
+	    List<CartItem> cartItemList = cartItemRepo.findByMemberId(memberId);
 	    
 	       // Get member object  
 	    Member member = memberRepo.getById(memberId);
-	       // Loop to iterate through all cart products
-	    for (int i = 0; i < cartProductList.size(); i++) {
-	      // Retrieve details about current cart product  
-	      CartProduct currentCartProduct = cartProductList.get(i);
-	      Product productToUpdate = currentCartProduct.getProduct();
-	      int quantityOfProductPurchased = currentCartProduct.getQuantity();
-	      int productToUpdateId = productToUpdate.getId();
+	       // Loop to iterate through all cart items
+	    for (int i = 0; i < cartItemList.size(); i++) {
+	      // Retrieve details about current cart item  
+	      CartItem currentCartItem = cartItemList.get(i);
+	      Item itemToUpdate = currentCartItem.getItem();
+	      int quantityOfItemPurchased = currentCartItem.getQuantity();
+	      int itemToUpdateId = itemToUpdate.getId();
 	      
-	      System.out.println("Product: " + productToUpdate.getDescription());
+	      System.out.println("Item: " + itemToUpdate.getDescription());
 	      
-	      // Update product table
-	      Product inventoryProduct = productRepo.getById(productToUpdateId);
-	      int currentInventoryQuantity = inventoryProduct.getQuantity();
-	      inventoryProduct.setQuantity(currentInventoryQuantity - quantityOfProductPurchased);
-	      productRepo.save(inventoryProduct);
+	      // Update item table
+	      Item inventoryItem = itemRepo.getById(itemToUpdateId);
+	      int currentInventoryQuantity = inventoryItem.getQuantity();
+	      inventoryItem.setQuantity(currentInventoryQuantity - quantityOfItemPurchased);
+	      itemRepo.save(inventoryItem);
 	      
-	      // Add product to order table  
-	      OrderProduct orderProduct = new OrderProduct();
-	      orderProduct.setOrderId(orderId);
-	      orderProduct.setTransactionId(transactionId);
-	      orderProduct.setProduct(productToUpdate);
-	      orderProduct.setMember(member);
-	      orderProduct.setQuantity(quantityOfProductPurchased);
-	      orderRepo.save(orderProduct);
+	      // Add item to order table  
+	      OrderItem orderItem = new OrderItem();
+	      orderItem.setOrderId(orderId);
+	      orderItem.setTransactionId(transactionId);
+	      orderItem.setItem(itemToUpdate);
+	      orderItem.setMember(member);
+	      orderItem.setQuantity(quantityOfItemPurchased);
+	      orderRepo.save(orderItem);
 	      
-	      // clear cart products belonging to member    
-	      cartProductRepo.deleteById(currentCartProduct.getId());
+	      // clear cart items belonging to member    
+	      cartItemRepo.deleteById(currentCartItem.getId());
 	    }
 	    // Pass info to view to display success page
 	    model.addAttribute("cartTotal", cartTotal);
-	    model.addAttribute("cartProductList", cartProductList);
+	    model.addAttribute("cartItemList", cartItemList);
 	    model.addAttribute("member", member);
 	    model.addAttribute("orderId", orderId);
 	    model.addAttribute("transactionId", transactionId);
@@ -215,19 +215,19 @@ public class CartProductController {
 	    int loggedInMemberId = loggedInMember.getMember().getId();
 
 	    // Get all orders for the logged in member
-	    List<OrderProduct> orderList = orderRepo.findByMemberId(loggedInMemberId);
+	    List<OrderItem> orderList = orderRepo.findByMemberId(loggedInMemberId);
 
 	    // Calculate total price for each seller
 	    Map<String, Double> totalPriceBySeller = new HashMap<>();
 	    double overallTotalPrice = 0.0;
 
-	    for (OrderProduct orderProduct : orderList) {
-	        String sellerName = orderProduct.getProduct().getSeller();
-	        double productPrice = orderProduct.getProduct().getPrice();
+	    for (OrderItem orderItem : orderList) {
+	        String sellerName = orderItem.getItem().getSeller();
+	        double itemPrice = orderItem.getItem().getPrice();
 	        double totalPrice = totalPriceBySeller.getOrDefault(sellerName, 0.0);
-	        totalPrice += productPrice * orderProduct.getQuantity();
+	        totalPrice += itemPrice * orderItem.getQuantity();
 	        totalPriceBySeller.put(sellerName, totalPrice);
-	        overallTotalPrice += productPrice * orderProduct.getQuantity();
+	        overallTotalPrice += itemPrice * orderItem.getQuantity();
 	    }
 
 	    // Add the order list, total price, and split total price to the model
@@ -248,7 +248,7 @@ public class CartProductController {
         int loggedInMemberId = loggedInMember.getMember().getId();
         
         // Get all orders for the logged in member
-        List<OrderProduct> orderList = orderRepo.findByMemberId(loggedInMemberId);
+        List<OrderItem> orderList = orderRepo.findByMemberId(loggedInMemberId);
         
         // Add the order list to the model
         model.addAttribute("orderList", orderList);
