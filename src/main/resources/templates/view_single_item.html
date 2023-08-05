@@ -1,78 +1,170 @@
-<!-- 21041531 Badi code & function  -->
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <title>Booklink - View Item</title>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <script src="/bootstrap/js/bootstrap.js"></script>
-    <style>
-        body {
-            padding-top: 20px;
-        }
+<title>Booklink - View Item</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/js/bootstrap.js"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+	crossorigin="anonymous">
+<link
+	href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+	rel="stylesheet">
 
-        .item-image {
-            max-width: 100%;
-            max-height: 400px;
-        }
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script defer
+	src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script defer
+	src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<style>
+body {
+	padding-top: 20px;
+}
 
-        .item-info {
-            padding: 20px;
-            border: 1px solid #eaeaea;
-        }
+.item-image {
+	max-width: 100%;
+	max-height: 400px;
+}
 
-        .price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007bff;
-        }
+.item-info {
+	padding: 20px;
+	border: 1px solid #eaeaea;
+}
 
-        .quantity-label {
-            font-size: 16px;
-        }
+.price {
+	font-size: 24px;
+	font-weight: bold;
+	color: #007bff;
+}
 
-        .quantity-input {
-            width: 20px;
-            height: 40px;
-            font-size: 16px;
-            text-align: center;
-        }
-    </style>
+.quantity-label {
+	font-size: 16px;
+}
+
+.quantity-input {
+	width: 20px;
+	height: 40px;
+	font-size: 16px;
+	text-align: center;
+}
+
+#currency-converter {
+	margin-bottom: 10px;
+}
+</style>
 </head>
 
 <body>
-    <div class="container">
-        <div th:replace="fragments/header"></div>
-        <main>
-            <h1 th:text="${item.name}" class="mb-3"></h1>
-            <h5 th:text="${item.category.name}" class="mb-4 text-muted"></h5>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<main>
+			<h1 th:text="${item.name}" class="mb-3"></h1>
+			<h5 th:text="${item.category.name}" class="mb-4 text-muted"></h5>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <img th:src="@{/uploads/items/{id}/{imageName}(id=${item.id}, imageName=${item.imgName})}"
-                        class="item-image mb-4" />
-                </div>
-                <div class="col-md-6">
-                    <div class="item-info">
-                        <p th:text="${item.description}" class="mb-4"></p>
-                        <p class="price">$<span th:text="${item.price}"></span></p>
-                        <p class="quantity-label">Quantity available: <span th:text="${item.quantity}"></span></p>
-                        <form th:action="@{/cart/add/{itemId}(itemId=${item.id})}" method="post" class="mb-4">
-                            <div class="input-group">
-                                <input type="number" name="quantity" min="1" class="form-control quantity-input" placeholder="Quantity" required />
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="submit">Add to Cart</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </main>
+			<div class="row">
+				<div class="col-md-6">
+					<img
+						th:src="@{/uploads/items/{id}/{imageName}(id=${item.id}, imageName=${item.imgName})}"
+						class="item-image mb-4" />
+				</div>
+				<div class="col-md-6">
+					<div class="item-info">
+						<p th:text="${item.description}" class="mb-4"></p>
+						<p class="price">
+							$<span id="item-price" class="item-price" th:text="${item.price}"
+								th:attr="data-original-price=${item.price}"></span>
+						</p>
+						<p>
+							Quantity available: <span th:text="${item.quantity}"></span>
+						</p>
+						<form th:action="@{/cart/add/{itemId}(itemId=${item.id})}"
+							method="post" class="mb-4">
+							<div class="input-group">
+								<input type="number" name="quantity" min="1"
+									class="form-control quantity-input" placeholder="Quantity"
+									required />
+								<div class="input-group-append">
+									<button class="btn btn-primary" type="submit">Add to
+										Cart</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</main>
 
-        <div th:replace="fragments/footer"></div>
-    </div>
+		<div th:replace="fragments/footer"></div>
+	</div>
+
+	<script>
+		// Retrieve the price value from the server-side code
+		var itemPrice = parseFloat("${item.price}");
+
+		// Set the price value in the input field
+		document.getElementById("forex-amount").value = itemPrice;
+
+		// Define the convertCurrency function
+		function convertCurrency() {
+			// Get the input values
+			var amount = parseFloat(document.getElementById("item-price").getAttribute("data-original-price"));
+			var fromCurrency = "SGD"; // Set the base currency to SGD
+			var toCurrency = document.getElementById("currency-select").value;
+
+			// Construct the API URL with the API key and input values
+			var apiUrl = "https://api.exchangerate-api.com/v4/latest/" + fromCurrency;
+
+			// Make the API request
+			fetch(apiUrl)
+				.then(response => response.json())
+				.then(data => {
+					// Convert the amount based on the exchange rate
+					var exchangeRate = data.rates[toCurrency];
+					
+					if (!isNaN(exchangeRate)) {
+						var convertedAmount = amount * exchangeRate;
+
+						// Update the item price with the converted amount
+						if (!isNaN(convertedAmount)) {
+							document.getElementById("item-price").textContent = convertedAmount.toFixed(2);
+						}
+					} else {
+						console.error("Invalid exchange rate:", exchangeRate);
+					}
+				})
+				.catch(error => {
+					console.error("Error:", error);
+				});
+		}
+
+		// Call the convertCurrency function when the DOM content is loaded
+		document.addEventListener("DOMContentLoaded", function() {
+			// Set the initial item price in the element
+			document.getElementById("item-price").textContent = itemPrice.toFixed(2);
+
+			// Call the convertCurrency function
+			setTimeout(convertCurrency, 0);
+		});
+
+		// Reset the price to the original value when the currency is changed
+		document.getElementById("currency-select").addEventListener("change", function() {
+			document.getElementById("item-price").textContent = itemPrice.toFixed(2);
+			setTimeout(convertCurrency, 0);
+		});
+	</script>
+
+	<!-- Currency converter in the header -->
+	<div id="currency-converter" class="mb-3">
+		<label for="currency-select">Select Currency:</label> <select
+			id="currency-select" onchange="convertCurrency()">
+			<option value="SGD">SGD</option>
+			<option value="USD">USD</option>
+			<option value="GBP">GBP</option>
+			<!-- Add more currency options here -->
+		</select>
+	</div>
+
 </body>
-
 </html>

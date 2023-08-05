@@ -7,6 +7,9 @@
 *{
 font-family: 'Poppins', sans-serif;
 }
+body {
+            padding-top: 80px;
+        }
 </style>
 </head>
 <header>
@@ -54,6 +57,18 @@ font-family: 'Poppins', sans-serif;
 					<li class="nav-item"><a sec:authorize="hasRole('ROLE_ADMIN')" href="http://localhost:8080/dashboard" class="nav-link text-white">Dashboard</a>
 					</li>
 					
+					
+					
+					
+					<select id="currency-select">
+					<option value="SGD" selected>SGD</option>
+					<option value="USD">USD</option>
+					<option value="GBP">GBP</option>
+					<option value="EUR">EUR</option>
+					<option value="KES">KES</option>
+				</select>
+					
+					
 					<!--  <li class="nav-item"><a sec:authorize="hasRole('ROLE_BANNED')" href="http://localhost:8080/banned" class="nav-link text-white">You have been banned</a>
 					</li>-->
 					
@@ -68,4 +83,57 @@ font-family: 'Poppins', sans-serif;
 			</div>
 		</div>
 	</nav>
+	<script>
+	// Define the convertCurrency function
+    function convertCurrency() {
+        // Get the input values
+        var amount = parseFloat(document.getElementById("forex-amount").value);
+        var fromCurrency = "SGD"; // Set the base currency to SGD
+        var toCurrency = document.getElementById("currency-select").value;
+
+        // Construct the API URL with the API key and input values
+        var apiUrl = "https://api.exchangerate-api.com/v4/latest/" + fromCurrency;
+
+        // Make the API request
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Convert the amount based on the exchange rate
+                var exchangeRate = data.rates[toCurrency];
+
+                if (!isNaN(exchangeRate)) {
+                    var convertedAmount = amount * exchangeRate;
+
+                    // Update the item price with the converted amount
+                    if (!isNaN(convertedAmount)) {
+                        document.getElementById("item-price").textContent = convertedAmount.toFixed(2);
+                    }
+                } else {
+                    console.error("Invalid exchange rate:", exchangeRate);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    }
+
+    // Call the convertCurrency function when the DOM content is loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set the initial item price in the element
+        var itemPrice = parseFloat("${item.price}");
+        document.getElementById("item-price").textContent = itemPrice.toFixed(2);
+
+        // Call the convertCurrency function
+        setTimeout(convertCurrency, 0);
+    });
+
+    // Reset the price to the original value when the currency is changed
+    document.getElementById("currency-select").addEventListener("change", function() {
+        var itemPrice = parseFloat("${item.price}");
+        document.getElementById("item-price").textContent = itemPrice.toFixed(2);
+        setTimeout(convertCurrency, 0);
+    });
+	</script>
+
+
 </header>

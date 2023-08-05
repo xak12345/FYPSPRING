@@ -52,5 +52,10 @@ public class MainController {
 	public String success2() {
 		return "success2";
 	}
+	
+	@GetMapping("/sellersalesreport")
+	public String sellersalesreport() {
+		return "sellersalesreport";
+	}
 
 }

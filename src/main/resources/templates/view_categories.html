@@ -21,8 +21,7 @@ body {
 					<tr>
 						<th>ID</th>
 						<th>Category</th>
-						<th>Edit</th>
-						<th>Delete</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -30,9 +29,10 @@ body {
 						<tr>
 							<td th:text="${category.id}"></td>
 							<td th:text="${category.name}"></td>
+							
 							<td><a th:href="@{/categories/edit/{id}(id=${category.id})}"><button
-										type="button" class="btn btn-primary">Edit</button></a></td>
-							<td><a
+										type="button" class="btn btn-primary">Edit</button></a>
+							<a
 								th:href="@{/categories/delete/{id}(id=${category.id})}"><button
 										type="button" class="btn btn-warning">Delete</button></a></td>
 						</tr>

@@ -12,12 +12,14 @@
  */
 
 package e63c.xavier.FYP;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Filter;
@@ -44,12 +46,35 @@ public class Member {
 	private String username;
 	
 	@NotNull(message = "Password is required")
+	@Pattern(regexp = "^(?=.*[a-zA-Z\\d]).*$", message = "Password must have at least one character.")
 	private String password;
+
 	
 	@NotNull(message = "Email is required")
 	private String email;
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	private String role;
 	private boolean deleted = Boolean.FALSE;
+	
+	@Column(name = "verification_code", length = 64)
+    private String verificationCode;
+     
+    private boolean enabled;
 	
 	
 	private String resetPasswordToken;
