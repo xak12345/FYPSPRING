@@ -58,11 +58,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	    http.authorizeRequests()
 	    	.antMatchers("/forgot_password", "/forgot_password_form", "/reset_password").permitAll()
 	        .antMatchers("/categories", "/categories/add", "/categories/edit/*", "/categories/save", "/categories/delete/*").hasAnyRole("ADMIN", "SELLER")
-	        .antMatchers("/products/add", "/products/edit/*", "/products/save", "/products/delete/*").hasRole("SELLER")
+	        .antMatchers("/items/add", "/items/edit/*", "/items/save", "/items/delete/*").access("hasRole('SELLER') and not hasRole('BANNED')")
 	        .antMatchers("/members/add/*", "/members/edit/*", "/members/save", "/members/delete/*", "/members", "/generatead").hasRole("ADMIN")
-	        .antMatchers("/", "/contactus", "/products", "/purchase_history").hasAnyRole("BUYER", "SELLER")
-	        .antMatchers("/", "/contactus", "/products", "/categories").hasAnyRole("SELLER", "ADMIN")
-	        .antMatchers("/", "/products", "/contactus", "/success2", "/signupsuccess", "/failure").permitAll()
+	        .antMatchers("/", "/contactus", "/items", "/purchase_history").access("hasAnyRole('BUYER', 'SELLER') and not hasRole('BANNED')")
+	        .antMatchers("/", "/contactus", "/items", "/categories").access("hasAnyRole('SELLER', 'ADMIN') and not hasRole('BANNED')")
+	        .antMatchers("/", "/items", "/contactus", "/success2", "/signupsuccess", "/failure").access("not hasRole('BANNED')")
 	        .antMatchers("/bootstrap/*/*").permitAll()
 	        .antMatchers("/images/*").permitAll()
 	        .antMatchers("/aboutus").access("hasAnyRole('BUYER', 'SELLER') or not hasRole('BANNED')")
@@ -86,7 +86,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	            }
 	        });
 	}
-
 
 
 }

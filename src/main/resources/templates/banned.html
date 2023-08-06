@@ -17,7 +17,7 @@ html {
 body {
 	height: 100%;
 	padding: 10px;
-	background-color:rgb(20,20,48);
+	background-color: rgb(20, 20, 48);
 }
 /* a {
 	color: #EE4B5E !important;
@@ -92,23 +92,22 @@ a {
 	text-decoration: none;
 	transition: all 0.30s linear 0s;
 }
-
 </style>
 </head>
 <body>
 	<div class="text-wrapper">
 		<div class="title" data-content="403">YOU HAVE BEEN BANNED!</div>
 
-		<div class="subtitle">Contact the Admins for Unban Requests via the contact page
-			</div>
+		<div class="subtitle">Please Logout and contact the Admins for Unban Requests via
+			the contact page</div>
 
 		<!-- <div class="buttons">
 			<a class="button" href="http://localhost:8080">Go to Homepage</a>
 		</div> -->
 
-		<button class="home">
-			<a href="http://localhost:8080"> home page</a>
-		</button>
+		<form sec:authorize="isAuthenticated()" th:action="@{/logout}"
+			method="post" class="">
+			<button class="home" type="submit">Logout</button>
 	</div>
 </body>
 </html>
