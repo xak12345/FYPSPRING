@@ -36,9 +36,9 @@ public class Item {
 	@Min(value = 0, message = "Backend - Quantity must be positive!")
 	private int quantity;
 	
-	@NotNull
-    @NotEmpty(message = "Image name cannot be empty!")
-    @Size(max = 3000000, message = "Image size must be less than 3 MB")
+//	@NotNull
+//  @NotEmpty(message = "Image name cannot be empty!")
+//  @Size(max = 3000000, message = "Image size must be less than 3 MB")
 	private String imgName;
 
 	@ManyToOne
