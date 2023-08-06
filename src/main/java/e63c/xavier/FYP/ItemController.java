@@ -315,4 +315,9 @@ public class ItemController {
 		return authentication != null
 				&& authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 	}
+	
+	@GetMapping("/generatead")
+    public String generateAd() {
+        return "generatead";
+    }
 }
