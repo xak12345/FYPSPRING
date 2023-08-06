@@ -151,17 +151,35 @@ input[name="qty"] {
 			<script>
             'use strict';
 
+
+            'use strict';
+
+
+            'use strict';
+
             var form = document.querySelector('.needs-validation');
             var quantityInputs = document.querySelectorAll('input[name="qty"]');
+            var originalTotal = parseFloat(document.getElementById("cartTotal").textContent.replace("$", ""));
+            var baseCurrency = "SGD"; // Set the base currency here
+            var totalInBaseCurrency = originalTotal;
+            var originalTotalInBaseCurrency = originalTotal; // Store the original total in the base currency
 
-            quantityInputs.forEach(function(input) {
-                input.addEventListener('input', function(event) {
+            // Store the original prices in SGD for all items
+            var originalItemPrices = {};
+            var itemPrices = document.querySelectorAll(".item-price");
+            itemPrices.forEach(function (itemPriceElement) {
+                var itemId = itemPriceElement.getAttribute("data-item-id");
+                originalItemPrices[itemId] = parseFloat(itemPriceElement.getAttribute("data-price"));
+            });
+
+            quantityInputs.forEach(function (input) {
+                input.addEventListener('input', function (event) {
                     validateInput(input);
                     updateSubtotal(input);
                     updateTotal();
                 });
 
-                input.addEventListener('keydown', function(event) {
+                input.addEventListener('keydown', function (event) {
                     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
                         event.preventDefault();
                         var currentValue = parseInt(input.value);
@@ -174,9 +192,9 @@ input[name="qty"] {
                 });
             });
 
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 var inputs = form.querySelectorAll('input[name="qty"]');
-                inputs.forEach(function(input) {
+                inputs.forEach(function (input) {
                     validateInput(input);
                 });
 
@@ -184,8 +202,6 @@ input[name="qty"] {
                     event.preventDefault();
                     event.stopPropagation();
                 }
-
-                updateTotal();
 
                 form.classList.add('was-validated');
             });
@@ -205,16 +221,17 @@ input[name="qty"] {
 
             // Function to handle currency conversion
             function convertCurrency() {
-                var fromCurrency = "SGD"; // Base currency is SGD
+                var fromCurrency = baseCurrency;
                 var toCurrency = document.getElementById("currency-select").value;
 
                 // Convert and update all item prices
                 var itemPrices = document.querySelectorAll(".item-price");
-                itemPrices.forEach(function(itemPriceElement) {
-                    var originalPrice = parseFloat(itemPriceElement.getAttribute("data-price"));
+                itemPrices.forEach(function (itemPriceElement) {
+                    var itemId = itemPriceElement.getAttribute("data-item-id");
+                    var originalPrice = originalItemPrices[itemId];
                     var exchangeRate = getExchangeRate(fromCurrency, toCurrency);
 
-                    exchangeRate.then(function(rate) {
+                    exchangeRate.then(function (rate) {
                         var convertedPrice = originalPrice * rate;
                         var formattedPrice = "$" + convertedPrice.toFixed(2) + " " + toCurrency;
                         itemPriceElement.textContent = formattedPrice;
@@ -223,53 +240,91 @@ input[name="qty"] {
 
                 // Convert and update all item subtotals
                 var itemSubtotals = document.querySelectorAll(".item-subtotal");
-                itemSubtotals.forEach(function(itemSubtotalElement) {
+                itemSubtotals.forEach(function (itemSubtotalElement) {
                     var originalSubtotal = parseFloat(itemSubtotalElement.getAttribute("data-subtotal"));
                     var exchangeRate = getExchangeRate(fromCurrency, toCurrency);
 
-                    exchangeRate.then(function(rate) {
+                    exchangeRate.then(function (rate) {
                         var convertedSubtotal = originalSubtotal * rate;
                         var formattedSubtotal = "$" + convertedSubtotal.toFixed(2) + " " + toCurrency;
                         itemSubtotalElement.textContent = formattedSubtotal;
                     });
                 });
 
-                // Update the cart total with the converted currency
-                var cartTotal = parseFloat(document.getElementById("cartTotal").textContent.replace("$", ""));
-                var exchangeRate = getExchangeRate(fromCurrency, toCurrency);
+                // Update the total in the base currency (SGD) or the selected currency
+                var cartTotalElement = document.getElementById("cartTotal");
+                var selectedCurrency = document.getElementById("currency-select").value;
 
-                exchangeRate.then(function(rate) {
-                    var convertedTotal = cartTotal * rate;
-                    document.getElementById("cartTotal").textContent = "$" + convertedTotal.toFixed(2);
-                });
+                if (selectedCurrency === baseCurrency) {
+                    // Use the original total in the base currency if the selected currency is the base currency
+                    var formattedTotal = "$" + originalTotalInBaseCurrency.toFixed(2) + " " + baseCurrency;
+                    cartTotalElement.textContent = formattedTotal;
+                } else {
+                    // Convert and update the total in the selected currency
+                    var exchangeRate = getExchangeRate(fromCurrency, toCurrency);
+                    exchangeRate.then(function (rate) {
+                        var convertedTotal = totalInBaseCurrency * rate;
+                        var formattedTotal = "$" + convertedTotal.toFixed(2) + " " + selectedCurrency;
+                        cartTotalElement.textContent = formattedTotal;
+                    });
+                }
             }
 
             // Helper function to get the exchange rate from the API
             function getExchangeRate(fromCurrency, toCurrency) {
                 var apiUrl = "https://api.exchangerate-api.com/v4/latest/" + fromCurrency;
                 return fetch(apiUrl)
-                    .then(function(response) {
+                    .then(function (response) {
                         return response.json();
                     })
-                    .then(function(data) {
+                    .then(function (data) {
                         return data.rates[toCurrency];
                     })
-                    .catch(function(error) {
+                    .catch(function (error) {
                         console.error("Error:", error);
                     });
             }
 
             // Call the convertCurrency function when the DOM content is loaded
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 // Call the convertCurrency function
                 convertCurrency();
 
                 // Handle currency conversion when the currency is changed
                 var select = document.getElementById("currency-select");
-                select.addEventListener("change", function() {
+                select.addEventListener("change", function () {
                     convertCurrency();
                 });
             });
+
+            function updateTotal() {
+                var itemSubtotals = document.querySelectorAll(".item-subtotal");
+                var total = 0;
+
+                itemSubtotals.forEach(function (itemSubtotalElement) {
+                    var subtotal = parseFloat(itemSubtotalElement.textContent.replace("$", ""));
+                    total += subtotal;
+                });
+
+                // Update the cart total with the converted currency
+                var cartTotalElement = document.getElementById("cartTotal");
+                var selectedCurrency = document.getElementById("currency-select").value;
+
+                var exchangeRate;
+                if (selectedCurrency === baseCurrency) {
+                    // Use the original total in the base currency if the selected currency is the base currency
+                    var formattedTotal = "$" + originalTotalInBaseCurrency.toFixed(2) + " " + baseCurrency;
+                    cartTotalElement.textContent = formattedTotal;
+                } else {
+                    // Convert and update the total in the selected currency
+                    exchangeRate = getExchangeRate(baseCurrency, selectedCurrency);
+                    exchangeRate.then(function (rate) {
+                        var convertedTotal = totalInBaseCurrency * rate;
+                        var formattedTotal = "$" + convertedTotal.toFixed(2) + " " + selectedCurrency;
+                        cartTotalElement.textContent = formattedTotal;
+                    });
+                }
+            }
             
          
             </script>

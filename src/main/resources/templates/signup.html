@@ -17,40 +17,37 @@ body {
 	<div class="container">
 		<div th:replace="fragments/header"></div>
 		<h1>Signup as a new Member</h1>
-		<form th:action="@{/signup}" method="post" enctype="multipart/form-data" 
-		th:object="${member}" novalidate>
-		
+		<form th:action="@{/signup}" method="post"
+			enctype="multipart/form-data" th:object="${member}" novalidate>
 			<div class="mb-3 col-5">
-				<label for="member_name" class="form-label">Name: </label> <input
+				<label for="member_name" class="form-label">Name:</label> <input
 					id="member_name" type="text" class="form-control"
 					th:field="*{name}" required /> <label for="member_username"
-					class="form-label">Username: </label> <input id="member_username"
+					class="form-label">Username:</label> <input id="member_username"
 					type="text" class="form-control" th:field="*{username}" required />
-					
-				<label for="member_password" class="form-label">Password: </label> <input
+
+				<label for="member_password" class="form-label">Password:</label> <input
 					id="member_password" type="password" name="pwd"
-					class="form-control" th:field="*{password}" required
-					pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$">
-				<div class="invalid-feedback">Front- Please enter a valid password.</div>
-				<p class="text-danger" th:if="${#fields.hasErrors('password')}"
-					th:errors="*{password}"></p>
+					class="form-control" th:field="*{password}" th:minlength="8"
+					th:maxlength="25" required />
+				<div class="invalid-feedback"
+					th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 
-
-				<label for="member_email" class="form-label">Email: </label> <input
+				<label for="member_email" class="form-label">Email:</label> <input
 					id="member_email" type="text" class="form-control"
 					th:field="*{email}" required /> <label for="member_role"
-					class="form-label">Role: </label> <select id="member_role"
+					class="form-label">Role:</label> <select id="member_role"
 					class="form-control" th:field="*{role}">
 					<option value="ROLE_BUYER">Buyer</option>
 					<option value="ROLE_SELLER">Seller</option>
-
 				</select>
 
 			</div>
 
 
 			<div class="mt-3">
-				<button type="submit" class="btn btn-primary" id="registerBtn" onclick="showAlert()">Register</button>
+				<button type="submit" class="btn btn-primary" id="registerBtn"
+					onclick="showAlert()">Register</button>
 			</div>
 		</form>
 
@@ -64,18 +61,18 @@ body {
 	<div th:replace="fragments/footer"></div>
 	</div>
 	<script>
-  function showAlert() {
-    // Perform form submission or registration process here
-    // Replace the following lines with your actual form submission logic
-    var isSuccessful = true; // Set this to true if the registration is successful, false otherwise
+		function showAlert() {
+			// Perform form submission or registration process here
+			// Replace the following lines with your actual form submission logic
+			var isSuccessful = true; // Set this to true if the registration is successful, false otherwise
 
-    if (isSuccessful) {
-      alert("An email has been sent to you. Please check your inbox to complete the registration process."); // Show success message
-    } else {
-      alert("Registration failed. Please try again."); // Show failure message
-    }
-  }
-</script>
+			if (isSuccessful) {
+				alert("An email has been sent to you. Please check your inbox to complete the registration process."); // Show success message
+			} else {
+				alert("Registration failed. Please try again."); // Show failure message
+			}
+		}
+	</script>
 
 </body>
 </html>
