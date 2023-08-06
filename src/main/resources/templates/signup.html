@@ -9,59 +9,57 @@
 <script src="/bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
-	<div class="container">
-		<div th:replace="fragments/header"></div>
-		<h1>Signup as a new Member</h1>
-		<form th:action="@{/signup}" method="post" th:object="${member}">
-			<div class="mb-3 col-5">
-				<label for="member_name" class="form-label">Name: </label> <input
-					id="member_name" type="text" class="form-control"
-					th:field="*{name}" required /> <label for="member_username"
-					class="form-label">Username: </label> <input id="member_username"
-					type="text" class="form-control" th:field="*{username}" required />
+  <div class="container">
+    <div th:replace="fragments/header"></div>
+    <h1>Signup as a new Member</h1>
+    <form th:action="@{/signup}" method="post" th:object="${member}">
+      <div class="mb-3 col-5">
+        <label for="member_name" class="form-label">Name: </label> <input
+          id="member_name" type="text" class="form-control"
+          th:field="*{name}" required /> <label for="member_username"
+          class="form-label">Username: </label> <input id="member_username"
+          type="text" class="form-control" th:field="*{username}" required />
 
-				<label for="member_password" class="form-label">Password: </label> <input
-					id="member_password" type="password" name="pwd"
-					class="form-control" th:field="*{password}" required
-					pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$">
-				<div class="invalid-feedback">Front- Please enter a valid password.</div>
-				<p class="text-danger" th:if="${#fields.hasErrors('password')}"
-					th:errors="*{password}"></p>
+        <label for="member_password" class="form-label">Password: </label> <input
+          id="member_password" type="password" name="pwd"
+          class="form-control" th:field="*{password}" required
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$">
+        <div class="invalid-feedback">Front- Please enter a valid password.</div>
+        <p class="text-danger" th:if="${#fields.hasErrors('password')}"
+          th:errors="*{password}"></p>
 
-				<label for="member_email" class="form-label">Email: </label> <input
-					id="member_email" type="text" class="form-control"
-					th:field="*{email}" required /> <label for="member_role"
-					class="form-label">Role: </label> <select id="member_role"
-					class="form-control" th:field="*{role}">
-					<option value="ROLE_BUYER">Buyer</option>
-					<option value="ROLE_SELLER">Seller</option>
+        <label for="member_email" class="form-label">Email: </label> <input
+          id="member_email" type="text" class="form-control"
+          th:field="*{email}" required /> <label for="member_role"
+          class="form-label">Role: </label> <select id="member_role"
+          class="form-control" th:field="*{role}">
+          <option value="ROLE_BUYER">Buyer</option>
+          <option value="ROLE_SELLER">Seller</option>
 
-				</select>
+        </select>
 
-			</div>
+      </div>
 
-			<div class="mt-3">
-				<button type="submit" class="btn btn-primary" onclick="showAlert()">Register</button>
-			</div>
-		</form>
+      <div class="mt-3">
+        <button type="submit" class="btn btn-primary" onclick="showAlert()">Register</button>
+      </div>
+    </form>
 
-		<div th:if="${successMessage}" class="alert alert-success mt-3">
-			<p th:text="${successMessage}"></p>
-		</div>
-		<div th:if="${errorMessage}" class="alert alert-danger mt-3">
-			<p th:text="${errorMessage}"></p>
-		</div>
-	</div>
+    <div th:if="${successMessage}" class="alert alert-success mt-3">
+      <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger mt-3">
+      <p th:text="${errorMessage}"></p>
+    </div>
+  </div>
 
-	<div th:replace="fragments/footer"></div>
-	<script>
-		function showAlert() {
-			// Display the alert popup
-			alert("An email has been sent to you. Please check your inbox to complete the registration process.");
-		}
-	</script>
+  <div th:replace="fragments/footer"></div>
+  <script>
+    function showAlert() {
+      // Display the alert popup
+      alert("An email has been sent to you. Please check your inbox to complete the registration process.");
+    }
+  </script>
 
 </body>
 </html>
-
-
