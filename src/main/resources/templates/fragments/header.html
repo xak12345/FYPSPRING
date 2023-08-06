@@ -2,27 +2,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 <script src="/bootstrap/css/bootstrap.js"></script>
-<link rel="icon" type="images" href="images/favicon.png"/>
+<link rel="icon" type="images" href="images/favicon.png" />
 <style>
-*{
-font-family: 'Poppins', sans-serif;
+* {
+	font-family: 'Poppins', sans-serif;
 }
+
 body {
-            padding-top: 80px;
-        }
+	padding-top: 80px;
+}
 </style>
 </head>
 <header>
-<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark p-md-3">
+	<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<nav
+		class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark p-md-3">
 		<div class="container-fluid">
-			 <a href="http://localhost:8080" class="navbar-brand">XK ELECTRONICS<!-- <img
-				src="/images/xk.gif" style="height:80px; object-fit:cover; border:10px">--></a>
-			<button type="button" class="navbar-toggler" 
-				data-bs-target="#navbarNav" 
-				data-bs-toggle="collapse"
-				aria-controls="navbarNav" 
-				aria-expanded="false"
+			<a href="http://localhost:8080" class="navbar-brand">XK
+				ELECTRONICS<!-- <img
+				src="/images/xk.gif" style="height:80px; object-fit:cover; border:10px">-->
+			</a>
+			<button type="button" class="navbar-toggler"
+				data-bs-target="#navbarNav" data-bs-toggle="collapse"
+				aria-controls="navbarNav" aria-expanded="false"
 				aria-lable="Toggle Navbar">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -30,108 +32,113 @@ body {
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<div class="mx-auto"></div>
 				<ul class="navbar-nav">
-					<li class="nav-item"><a href="http://localhost:8080" class="nav-link text-white">Home</a>
+					<li class="nav-item"><a href="http://localhost:8080"
+						class="nav-link text-white">Home</a></li>
+
+					<li class="nav-item"><a
+						sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_BUYER','ROLE_SELLER')"
+						href="/items" class="nav-link text-white">Items</a></li>
+
+					<li class="nav-item"><a
+						sec:authorize="hasAnyRole('ROLE_BUYER','ROLE_SELLER')"
+						class="nav-link text-white" href="/cart">Cart</a></li>
+
+					<li class="nav-item"><a
+						sec:authorize="hasAnyRole('ROLE_BUYER','ROLE_SELLER')"
+						class="nav-link text-white" href="/purchase_history">Purchase
+							History</a></li>
+
+					<li class="nav-item"><a
+						sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SELLER')"
+						href="/categories" class="nav-link text-white">Categories</a></li>
+
+					<li class="nav-item"><a sec:authorize="hasRole('ROLE_ADMIN')"
+						href="http://localhost:8080/members" class="nav-link text-white">Members</a>
 					</li>
 
-					<li class="nav-item"><a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_BUYER','ROLE_SELLER')" href="/items" class="nav-link text-white">Items</a>
-					</li>
-					
-					<li class="nav-item"><a sec:authorize="hasAnyRole('ROLE_BUYER','ROLE_SELLER')" class="nav-link text-white" href="/cart">Cart</a>
-					</li>
-					
-					<li class="nav-item"><a sec:authorize="hasAnyRole('ROLE_BUYER','ROLE_SELLER')" class="nav-link text-white" href="/purchase_history">Purchase History</a>
-					</li>
-					
-					<li class="nav-item"><a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SELLER')" href="/categories" class="nav-link text-white">Categories</a>
-					</li>
-					
-					<li class="nav-item"><a sec:authorize="hasRole('ROLE_ADMIN')" href="http://localhost:8080/members" class="nav-link text-white">Members</a>
+					<li class="nav-item"><a href="http://localhost:8080/aboutus"
+						class="nav-link text-white">About</a></li>
+
+					<li class="nav-item"><a href="http://localhost:8080/contactus"
+						class="nav-link text-white">Contact</a></li>
+
+					<li class="nav-item"><a sec:authorize="hasRole('ROLE_ADMIN')"
+						href="http://localhost:8080/dashboard" class="nav-link text-white">Dashboard</a>
 					</li>
 
-					<li class="nav-item"><a href="http://localhost:8080/aboutus" class="nav-link text-white">About</a>
-					</li>
 
-					<li class="nav-item"><a href="http://localhost:8080/contactus" class="nav-link text-white">Contact</a>
-					</li>
-					
-					<li class="nav-item"><a sec:authorize="hasRole('ROLE_ADMIN')" href="http://localhost:8080/dashboard" class="nav-link text-white">Dashboard</a>
-					</li>
-					
-					
-					
-					
+
+
 					<select id="currency-select">
-					<option value="SGD" selected>SGD</option>
-					<option value="USD">USD</option>
-					<option value="GBP">GBP</option>
-					<option value="EUR">EUR</option>
-					<option value="KES">KES</option>
-				</select>
-					
-					
+						<option value="SGD" selected>SGD</option>
+						<option value="USD">USD</option>
+						<option value="GBP">GBP</option>
+						<option value="EUR">EUR</option>
+						<option value="KES">KES</option>
+					</select>
+
+
 					<!--  <li class="nav-item"><a sec:authorize="hasRole('ROLE_BANNED')" href="http://localhost:8080/banned" class="nav-link text-white">You have been banned</a>
 					</li>-->
-					
-					<li class="nav-item"><a sec:authorize="!isAuthenticated()" class="nav-link text-white"
-					href="/login">Login</a>
-				<form sec:authorize="isAuthenticated()" th:action="@{/logout}"
-					method="post" class="">
-					<button class="btn nav-link" type="submit">Logout</button>
-				</form>
-					</li>
+
+					<li class="nav-item"><a sec:authorize="!isAuthenticated()"
+						class="nav-link text-white" href="/login">Login</a>
+						<form sec:authorize="isAuthenticated()" th:action="@{/logout}"
+							method="post" class="">
+							<button class="btn nav-link" type="submit">Logout</button>
+						</form></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 	<script>
 	// Define the convertCurrency function
-    function convertCurrency() {
-        // Get the input values
-        var amount = parseFloat(document.getElementById("forex-amount").value);
-        var fromCurrency = "SGD"; // Set the base currency to SGD
+    function convertCurrency(element) {
+        var fromCurrency = "SGD"; // Base currency is SGD
         var toCurrency = document.getElementById("currency-select").value;
 
-        // Construct the API URL with the API key and input values
+        // Retrieve the price value and the original price attribute from the element
+        var itemPrice = parseFloat(element.textContent);
+        var originalPrice = parseFloat(element.getAttribute("data-original-price"));
+
+        // Make an API call to get the exchange rate for the selected currencies
         var apiUrl = "https://api.exchangerate-api.com/v4/latest/" + fromCurrency;
 
-        // Make the API request
         fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                // Convert the amount based on the exchange rate
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
                 var exchangeRate = data.rates[toCurrency];
 
-                if (!isNaN(exchangeRate)) {
-                    var convertedAmount = amount * exchangeRate;
-
-                    // Update the item price with the converted amount
-                    if (!isNaN(convertedAmount)) {
-                        document.getElementById("item-price").textContent = convertedAmount.toFixed(2);
-                    }
+                if (exchangeRate) {
+                    // Perform the currency conversion for the original price
+                    var convertedPrice = originalPrice * exchangeRate;
+                    var formattedPrice = convertedPrice.toFixed(2) + " " + toCurrency;
+                    element.textContent = formattedPrice;
                 } else {
                     console.error("Invalid exchange rate:", exchangeRate);
                 }
             })
-            .catch(error => {
+            .catch(function (error) {
                 console.error("Error:", error);
             });
     }
 
-    // Call the convertCurrency function when the DOM content is loaded
-    document.addEventListener("DOMContentLoaded", function() {
-        // Set the initial item price in the element
-        var itemPrice = parseFloat("${item.price}");
-        document.getElementById("item-price").textContent = itemPrice.toFixed(2);
+    // Call the convertCurrency function for all elements with the class 'item-price'
+    document.addEventListener("DOMContentLoaded", function () {
+        var itemPrices = document.querySelectorAll(".item-price");
+        itemPrices.forEach(function (element) {
+            convertCurrency(element);
+        });
 
-        // Call the convertCurrency function
-        setTimeout(convertCurrency, 0);
-    });
-
-    // Reset the price to the original value when the currency is changed
-    document.getElementById("currency-select").addEventListener("change", function() {
-        var itemPrice = parseFloat("${item.price}");
-        document.getElementById("item-price").textContent = itemPrice.toFixed(2);
-        setTimeout(convertCurrency, 0);
+        // Handle currency conversion when the currency is changed
+        var select = document.getElementById("currency-select");
+        select.addEventListener("change", function () {
+            itemPrices.forEach(function (element) {
+                convertCurrency(element);
+            });
+        });
     });
 	</script>
 
