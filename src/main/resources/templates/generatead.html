@@ -1,75 +1,77 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Generate Advertisement</title>
-<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-
-<style>
-body {
-	padding-top: 80px;
-}
-</style>
-
+    <title>Generate Advertisement</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+    </style>
 </head>
 <body>
-	<div th:replace="/fragments/header"></div>
-	<div class="container my-4">
-		<h1>Generate Advertisement</h1>
-		<form id="productForm" enctype="multipart/form-data">
-			<div class="form-group">
-				<label for="sellerName">Seller's Name</label> <input type="text"
-					class="form-control" id="sellerName" name="sellerName" required>
-			</div>
-			<div class="form-group">
-				<label for="productName">Product Name</label> <input type="text"
-					class="form-control" id="productName" name="productName" required>
-			</div>
-			<div class="form-group">
-				<label for="productDescription">Product Description</label>
-				<textarea class="form-control" id="productDescription"
-					name="productDescription" required></textarea>
-			</div>
-			<div class="form-group">
-				<label for="productPrice">Product Price</label> <input type="number"
-					class="form-control" id="productPrice" name="productPrice" required>
-			</div>
-			<div class="form-group">
-				<label for="productImage">Product Image</label> <input type="file"
-					class="form-control" id="productImage" name="productImage"
-					accept="image/*" required>
-			</div>
-			<button type="button" onclick="submitProduct()"
-				class="btn btn-primary">Submit</button>
-		</form>
-	</div>
+    <div th:replace="/fragments/header"></div>
+    <div class="container my-4">
+        <h1>Generate Advertisement</h1>
+        <form id="itemForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="sellerName">Seller's Name</label>
+                <input type="text" class="form-control" id="sellerName" name="sellerName" required>
+            </div>
+            <div class="form-group">
+                <label for="itemName">Item Name</label>
+                <input type="text" class="form-control" id="itemName" name="itemName" required>
+            </div>
+            <div class="form-group">
+                <label for="itemDescription">Item Description</label>
+                <textarea class="form-control" id="itemDescription" name="itemDescription" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="itemPrice">Item Price</label>
+                <input type="number" class="form-control" id="itemPrice" name="itemPrice" required>
+            </div>
+            <div class="form-group">
+                <label for="itemImage">Item Image</label>
+                <input type="file" class="form-control" id="itemImage" name="itemImage" accept="image/*" required>
+            </div>
+            <button type="button" onclick="submitItem()" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 
-	<script>
-		function submitProduct() {
-			var sellerName = document.getElementById("sellerName").value;
-			var productName = document.getElementById("productName").value;
-			var productDescription = document
-					.getElementById("productDescription").value;
-			var productPrice = document.getElementById("productPrice").value;
+    <script>
+        function submitItem() {
+            var sellerName = document.getElementById("sellerName").value;
+            var itemName = document.getElementById("itemName").value;
+            var itemDescription = document.getElementById("itemDescription").value;
+            var itemPrice = document.getElementById("itemPrice").value;
 
-			var productImage = document.getElementById("productImage").files[0];
-			if (productImage) {
-				var reader = new FileReader();
-				reader.onload = function(event) {
-					var adDetails = {
-						sellerName : sellerName,
-						productName : productName,
-						productDescription : productDescription,
-						productPrice : productPrice,
-						productImage : event.target.result
-					};
-					localStorage
-							.setItem('adDetails', JSON.stringify(adDetails));
-					window.location.href = "/products";
-				};
-				reader.readAsDataURL(productImage);
-			}
-		}
-	</script>
-	<div th:replace="/fragments/footer"></div>
+            var itemImage = document.getElementById("itemImage").files[0];
+            if (itemImage) {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var adDetails = {
+                        sellerName: sellerName,
+                        itemName: itemName,
+                        itemDescription: itemDescription,
+                        itemPrice: itemPrice,
+                        itemImage: event.target.result
+                    };
+                    saveAd(adDetails); // Save the ad details
+                    window.location.href = "/items";
+                };
+                reader.readAsDataURL(itemImage);
+            }
+        }
+
+        function saveAd(adDetails) {
+            var username = '${#authentication.principal.username}';
+            var userKey = "ads_" + username;
+            var existingAds = JSON.parse(localStorage.getItem(userKey)) || [];
+
+            existingAds.push(adDetails);
+            localStorage.setItem(userKey, JSON.stringify(existingAds));
+        }
+    </script>
+    <div th:replace="/fragments/footer"></div>
 </body>
 </html>
