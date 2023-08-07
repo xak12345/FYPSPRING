@@ -36,7 +36,7 @@ body {
 							<th>Role</th>
 							<th onclick="sortTable('totalPrice')">Total Spending</th>
 							<th onclick="sortTable('totalEarned')">Total Earned</th>
-							<th>Email</th>
+							<th>Promote</th>
 							<th>Edit</th>
 							<th>Delete</th>
 						</tr>
@@ -59,7 +59,7 @@ body {
 							</span> <span th:unless="${member.role == 'ROLE_SELLER'}">-</span></td>
 
 							<td><a th:if="${member.role == 'ROLE_SELLER'}"
-								class="btn btn-success" onclick="sendEmail(this)">Email</a>
+								class="btn btn-success" onclick="sendEmail(this)">Promote</a>
 								<span th:unless="${member.role == 'ROLE_SELLER'}">-</span></td>
 
 							<td><a th:href="@{/members/edit/{id}(id=${member.id})}"><button
