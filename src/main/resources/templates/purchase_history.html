@@ -131,8 +131,8 @@ to {
 						<!-- order history header -->
 						<div class="row m-3 border-top border-bottom fs-5">
 							<div class="col">ORDER ID</div>
-							<div class="col">PRODUCT</div>
-							<div class="col">NAME</div>
+							<div class="col">ITEM</div>
+							<div class="col">SELLER</div>
 							<div class="col">QUANTITY</div>
 							<div class="col">TOTAL</div>
 							<div class="col">RATE</div>
@@ -143,12 +143,12 @@ to {
 							<!-- Product name, description, image -->
 							<div class="col align-self-center" th:text="${orderItem.orderId}"></div>
 							<div class="col mb-3">
-								<h5 th:text="${orderItem.item.seller}"></h5>
+								<h5 th:text="${orderItem.item.name}"></h5>
 								
 								<img width="100px"
 									th:src="@{/uploads/items/{id}/{imgName}(id=${orderItem.item.id}, imgName=${orderItem.item.imgName})}">
 							</div>
-							<div class="col align-self-center" th:text="${orderItem.item.name}"></div>
+							<div class="col align-self-center" th:text="${orderItem.item.seller}"></div>
 							<div class="col align-self-center"
 								th:text="${orderItem.quantity}"></div>
 							<div class="col align-self-center"
