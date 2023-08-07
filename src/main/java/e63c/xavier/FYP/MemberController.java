@@ -20,6 +20,7 @@ import org.hibernate.annotations.ParamDef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -223,6 +224,13 @@ public class MemberController {
 		memberRepository.save(member);
 		return "redirect:/members";
 	}
+	
+
+@GetMapping("/profile")
+ public String viewProfile(Model model, @AuthenticationPrincipal MemberDetails principal) {
+     model.addAttribute("principal", principal);
+     return "profile";
+ }
 
 //    @GetMapping("/members/undelete/{id}")
 //    public String undeleteMember(@PathVariable("id") Integer id) {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Profile Page</title>
+<!-- Update the Bootstrap CDN links to the latest version -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div th:replace="fragments/header"></div>
+	<!-- Add a container to center the content -->
+	<div class="container">
+
+
+		<!-- Add a section for the profile content -->
+		<div class="row mt-4">
+			<div class="col-md-3">
+				<!-- Add a sidebar with profile picture and some details -->
+				<div class="card">
+					<div class="card-body">
+						<h5 class="card-title" th:text="${principal.member.name}"></h5>
+						<p class="card-text"
+							th:text="'Username: ' + ${principal.member.username}"></p>
+						<p class="card-text"
+							th:text="'Email: ' + ${principal.member.email}"></p>
+						<!-- Add other relevant details about yourself -->
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<!-- Add the main content section -->
+				<div class="jumbotron">
+					<h1 class="display-4">Welcome to Your Profile</h1>
+					<!-- Add a short description about yourself -->
+					<p class="lead">
+						Hello! I'm <span th:text="${principal.member.name}">[Your
+							Name]</span>, and this is my awesome profile. Here, you can learn more
+						about me and my interests.
+					</p>
+					<!-- Add a button to encourage further exploration of your profile -->
+					<a class="btn btn-primary btn-lg" href="purchase_history" role="button">View
+						order history</a>
+				</div>
+			</div>
+</body>
+</html>
