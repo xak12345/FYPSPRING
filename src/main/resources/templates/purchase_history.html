@@ -1,71 +1,167 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>XK ELECTRONICS - Purchase History</title>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <script src="/bootstrap/js/bootstrap.js"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id=AS8QhhNa4NQBqi7knl--97JEe-QqDPs5kkNdT6kJt4ERGuhvNx1h577fg_1Gw3qz6H39tD67XAR2oUOI&currency=SGD&components=buttons"></script>
-    <style>
-        body {
-            padding-top: 80px;
-        }
-    </style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dessert Shop - Order History</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script src="/bootstrap/js/bootstrap.js"></script>
+<script
+	src="https://www.paypal.com/sdk/js?client-id=AYXIycYgpB-1J2CuUrnm0c0svAQD2ItEha4nZEtgLvJy7vRRIUlTpKGEFtZcVSJPXyrnhFu7jjGH5Lra&currency=SGD&components=buttons"></script>
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Full-width input fields */
+input[type=radio] {
+	display: none;
+}
+
+/* Set a style for all rating stars */
+.rating-container label {
+	font-size: 30px;
+	color: #ccc;
+	cursor: pointer;
+}
+
+/* Set style for checked rating stars */
+.rating-container input:checked+label {
+	color: #ffdd00;
+}
+
+.rating-container label:hover, .rating-container label:hover ~ label {
+	color: #ffdd00;
+}
+
+.container {
+	padding: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+	padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+	background-color: #fefefe;
+	margin: 5% auto 15% auto;
+	/* 5% from the top, 15% from the bottom and centered */
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+	position: absolute;
+	right: 25px;
+	top: 0;
+	color: #000;
+	font-size: 35px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus {
+	color: red;
+	cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+	-webkit-animation: animatezoom 0.6s;
+	animation: animatezoom 0.6s;
+}
+
+@
+-webkit-keyframes animatezoom {from { -webkit-transform:scale(0);
+	
+}
+
+to {
+	-webkit-transform: scale(1);
+}
+
+}
+@
+keyframes animatezoom {from { transform:scale(0);
+	
+}
+
+to {
+	transform: scale(1);
+}
+
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+	span.psw {
+		display: block;
+		float: none;
+	}
+	.cancelbtn {
+		width: 100%;
+	}
+}
+</style>
 </head>
+
 <body>
-    <h1>Purchase History</h1>
-    <div class="row mb-5">
-        <!-- shopping cart -->
-        <div class="col-11">
-            <div class="container ">
-                <div th:replace="fragments/header"></div>
-                <!-- shopping cart items header -->
-                <div class="row m-3 border-top border-bottom fs-5">
-                    <div class="col">Image</div>
-                    <div class="col">Seller</div>
-                    <div class="col">ID</div>
-                    <div class="col">OrderID</div>
-                    <div class="col">TransactionID</div>
-                    <div class="col">Name</div>
-                    <div class="col">Price</div>
-                    <div class="col">Quantity</div>
-                </div>
-                <!-- shopping cart rows -->
-                <div class="row m-3 border-bottom" th:each="orderItem : ${orderList}">
-                    <div class="col mb-3">
-                        <img width="100px"
-                             th:src="@{/uploads/items/{id}/{imgName}(id=${orderItem.item.id}, imgName=${orderItem.item.imgName})}" />
-                    </div>
-                    <div class="col mb-3" th:text="${orderItem.item.seller}"></div>
-                    <div class="col mb-3" th:text="${orderItem.Id}"></div>
-                    <div class="col mb-3" th:text="${orderItem.orderId}"></div>
-                    <div class="col mb-3" th:text="${orderItem.transactionId}"></div>
-                    <div class="col mb-3" th:text="${orderItem.item.name}"></div>
-                    <div class="col mb-3" th:text="${orderItem.item.price}"></div>
-                    <div class="col mb-3" th:text="${orderItem.quantity}"></div>
-                </div>
-
-                <!-- Overall Total Price -->
-                <!--  <div class="row m-3">
-                    <div class="col-6">
-                        <div th:each="entry : ${totalPriceBySeller}">
-                            <div th:text="${entry.key}"></div>
-                        </div>
-                        <div>Total Price:</div>
-                    </div>
-                    <div class="col-6">
-                        <div th:each="entry : ${totalPriceBySeller}">
-                        
-                            <div th:text="${entry.value}"></div>
-                        </div>
-                        <div><span th:text="${totalPrice}"></span></div>
-                    </div>
-                </div>-->
-
-            </div>
-        </div>
-    </div>
-
-    <div th:replace="fragments/footer"></div>
+	<main>
+		<div th:replace="fragments/header"></div>
+		<div class="container">
+			<div class="row fs-1 text-center align-items-center">
+				<p>PAST ORDERS</p>
+			</div>
+			<div class="row mb-5">
+				<div class="col-12">
+					<div class="container">
+						<!-- order history header -->
+						<div class="row m-3 border-top border-bottom fs-5">
+							<div class="col">ORDER ID</div>
+							<div class="col">PRODUCT</div>
+							<div class="col">QUANTITY</div>
+							<div class="col">TOTAL</div>
+							<div class="col">RATE</div>
+						</div>
+						<!-- shopping cart rows -->
+						<div class="row m-3 border-bottom"
+							th:each="orderItem : ${orderList}">
+							<!-- Product name, description, image -->
+							<div class="col align-self-center" th:text="${orderItem.orderId}"></div>
+							<div class="col mb-3">
+								<h5 th:text="${orderItem.item.seller}"></h5>
+								<img width="100px"
+									th:src="@{/uploads/items/{id}/{imgName}(id=${orderItem.item.id}, imgName=${orderItem.item.imgName})}">
+							</div>
+							<div class="col align-self-center"
+								th:text="${orderItem.quantity}"></div>
+							<div class="col align-self-center"
+								th:text="'$'+${orderItem.item.price}"></div>
+							<div class="col align-self-center">
+								<a
+									th:href="@{/rate/create/{itemId}/{quantity}(itemId=${orderItem.item.id}, quantity=${orderItem.quantity})}"
+									class="btn btn-primary"> RATE</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<div th:replace="fragments/footer"></div>
 </body>
+
 </html>
