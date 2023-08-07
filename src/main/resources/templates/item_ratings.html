@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>item Shop - item Ratings</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+	<div th:replace="fragments/header"></div>
+
+	<div class="container">
+		<h1 th:text="${item.name}"></h1>
+
+		<h2>Ratings and Reviews</h2>
+		<div th:each="rating : ${ratings}">
+			<div class="card mb-3">
+				<div class="card-header">
+					Rating: <span th:text="${rating.rating}"></span>/5
+				</div>
+				<div class="card-body">
+					<p class="card-text" th:text="${rating.message}"></p>
+					<img th:if="${rating.imgName != null && !rating.imgName.isEmpty()}"
+						th:src="@{/uploads/rate/{id}/{imageName}(id=${rating.id}, imageName=${rating.imgName})}"
+						class="img-thumbnail" alt="Image">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="fragments/footer"></div>
+</body>
+</html>

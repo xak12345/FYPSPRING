@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+
+
 //Import statements
 
 @Controller
@@ -104,9 +106,7 @@ public class ItemController {
 	public String saveItem(@Valid Item item, BindingResult bindingResult,
 			@RequestParam("itemImage") MultipartFile imgFile, Model model) {
 		if (bindingResult.hasErrors()) {
-			System.out.println(bindingResult.getFieldError());
-			List<Category> catList = categoryRepository.findAll();
-			model.addAttribute("catList", catList); // Handle validation errors and add categories to the model
+
 			return "add_item"; // Return the name of the view for the "add_item" page
 		}
 
@@ -136,7 +136,7 @@ public class ItemController {
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
-
+		itemRepository.save(item);
 		return "redirect:/items"; // Redirect to the view_items page
 	}
 
@@ -315,9 +315,23 @@ public class ItemController {
 		return authentication != null
 				&& authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 	}
-	
+
 	@GetMapping("/generatead")
-    public String generateAd() {
-        return "generatead";
-    }
+	public String generateAd() {
+		return "generatead";
+	}
+	@PostMapping("/search")
+	public String searchitem(@RequestParam(value = "query", required = false) String query, Model model) {
+	    List<Item> listitem;
+
+	    if (query != null && !query.isEmpty()) {
+	        listitem = itemRepository.findByNameContainingIgnoreCase(query);
+	    } else {
+	        listitem = itemRepository.findAll();
+	    }
+
+	    model.addAttribute("listitem", listitem);
+	    return "search";
+	}
+
 }
