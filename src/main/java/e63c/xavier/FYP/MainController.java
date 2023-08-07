@@ -13,9 +13,12 @@
 
 package e63c.xavier.FYP;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
+	private OrderItemRepository orderRepo;
 
 	@GetMapping("/")
 	public String home(Model model) {
@@ -53,9 +58,9 @@ public class MainController {
 		return "success2";
 	}
 	
-	@GetMapping("/sellersalesreport")
-	public String sellersalesreport() {
-		return "sellersalesreport";
+	@GetMapping("/walletbalance")
+	public String walletbalance() {
+		return "walletbalance";
 	}
-
 }
+
